@@ -230,6 +230,53 @@ em { font-style: italic; }
 .rows .k { color: var(--muted); }
 .rows .v { text-align: right; font-variant-numeric: tabular-nums; }
 
+/* Search, in motion: the app's own search box and results, an interface fragment with its own look (data-ui). */
+.ask-demo { padding-block: clamp(96px, 14vh, 160px); display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); column-gap: var(--gap); align-items: center; }
+.ask-say { grid-column: 1 / span 4; display: grid; gap: 24px; }
+.ask-say h2 { font-size: var(--step-head); max-width: 9em; }
+.ask-say p { font-size: var(--step-lead); line-height: 1.35; max-width: 32ch; }
+.sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+.mock { grid-column: 6 / span 7; position: relative; aspect-ratio: 16 / 11; overflow: hidden; border-radius: 22px; isolation: isolate;
+  font: 15px/1.4 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; color: #111; letter-spacing: 0; }
+.mock-sky { position: absolute; inset: -8%; width: 116%; height: 116%; max-width: none; object-fit: cover; z-index: -2; animation: sky 26s ease-in-out infinite alternate; }
+.mock::before { content: ""; position: absolute; inset: 0; z-index: -1; background: rgba(255, 255, 255, 0.58); }
+@keyframes sky { from { transform: scale(1.02) translate(0, 0); } to { transform: scale(1.14) translate(-3%, 2%); } }
+.mock-results { position: absolute; left: 7%; right: 7%; top: 9%; display: grid; gap: 2px; padding: 8px; border-radius: 20px;
+  background: rgba(255, 255, 255, 0.4); border: 1px solid rgba(255, 255, 255, 0.6); -webkit-backdrop-filter: blur(22px) saturate(1.7); backdrop-filter: blur(22px) saturate(1.7); /* taste-skill-ignore: the app's own glass, shown as an interface fragment (data-ui) */
+  box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.9), 0 18px 40px -18px rgba(20, 24, 45, 0.4); opacity: 0; transform: translateY(10px); transition: opacity 0.35s var(--ease-out), transform 0.45s var(--ease-out); } /* taste-skill-ignore: the app's own glass, shown as an interface fragment (data-ui) */
+.mock-results.on { opacity: 1; transform: none; }
+.mock-head { padding: 8px 12px 4px; font-weight: 600; font-size: 13px; color: #555; }
+.mock-row { display: grid; grid-template-columns: 42px minmax(0, 1fr); align-items: center; gap: 13px; padding: 9px 12px; border-radius: 14px; opacity: 0; transform: translateY(6px); transition: opacity 0.35s var(--ease-out), transform 0.4s var(--ease-out); }
+.mock-results.on .mock-row { opacity: 1; transform: none; }
+.mock-row:first-of-type { background: rgba(20, 24, 45, 0.045); }
+.mock-thumb { width: 42px; height: 42px; border-radius: 10px; background: rgba(20, 24, 45, 0.06); display: grid; place-items: center; font-size: 9.5px; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase; color: #777; overflow: hidden; }
+.mock-thumb img { width: 100%; height: 100%; object-fit: cover; object-position: 30% 55%; }
+.mock-name { font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.mock-meta { font-size: 12.5px; color: #7a7a7a; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.mock-snip { font-size: 12.5px; color: #555; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.mock-box { position: absolute; left: 12%; right: 12%; bottom: 7%; min-height: 76px; padding: 14px 16px 10px 20px; border-radius: 24px; display: grid; grid-template-columns: 1fr auto auto; align-items: end; column-gap: 8px;
+  background: rgba(255, 255, 255, 0.36); border: 1px solid rgba(255, 255, 255, 0.6); -webkit-backdrop-filter: blur(22px) saturate(1.7); backdrop-filter: blur(22px) saturate(1.7); /* taste-skill-ignore: the app's own glass, shown as an interface fragment (data-ui) */
+  box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.9), 0 14px 36px -16px rgba(20, 24, 45, 0.35); } /* taste-skill-ignore: the app's own glass, shown as an interface fragment (data-ui) */
+.mock-q { align-self: start; grid-column: 1 / -1; min-height: 21px; color: #111; }
+.mock-caret { display: inline-block; width: 1.5px; height: 1.05em; margin-left: 1px; vertical-align: -0.15em; background: #111; animation: caret 1s steps(1) infinite; }
+@keyframes caret { 50% { opacity: 0; } }
+.mock-dots { grid-column: 2; display: inline-flex; gap: 4px; align-items: center; height: 30px; opacity: 0; transition: opacity 0.2s; }
+.mock-dots.on { opacity: 1; }
+.mock-dots i { width: 6px; height: 6px; border-radius: 50%; background: #E39A74; animation: bob 1s ease-in-out infinite; }
+.mock-dots i:nth-child(2) { background: #988FD3; animation-delay: 0.15s; }
+.mock-dots i:nth-child(3) { background: #6EAFC0; animation-delay: 0.3s; }
+@keyframes bob { 0%, 60%, 100% { transform: translateY(0); opacity: 0.55; } 30% { transform: translateY(-5px); opacity: 1; } }
+.mock-go { grid-column: 3; width: 30px; height: 30px; border-radius: 50%; display: grid; place-items: center; color: #3d3d3d; background: rgba(20, 24, 45, 0.06); border: 1px solid rgba(255, 255, 255, 0.6); } /* taste-skill-ignore: the app's own glass, shown as an interface fragment (data-ui) */
+
+/* The app itself, twice: light and dark. */
+.screens { padding-block: clamp(40px, 6vh, 80px) clamp(110px, 15vh, 180px); }
+.screens h2 { font-size: var(--step-head); max-width: 12em; }
+.screens .grid { margin-top: 56px; align-items: start; row-gap: 40px; }
+.screens figure { margin: 0; display: grid; gap: 14px; }
+.screens .s1 { grid-column: 1 / span 7; }
+.screens .s2 { grid-column: 8 / span 5; margin-top: clamp(80px, 14vw, 220px); }
+.screens figcaption { font-size: var(--step-small); color: var(--muted); max-width: 40ch; }
+
 /* Install: the sentence ends in the download; three steps; the app itself beside it. */
 .cta { padding-block: clamp(64px, 10vh, 120px) clamp(120px, 16vh, 200px); display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); column-gap: var(--gap); align-items: start; }
 .cta .say { grid-column: 1 / span 6; display: grid; gap: 28px; align-content: start; }
@@ -266,6 +313,11 @@ footer { background: var(--ink); color: var(--accent-ink); min-height: clamp(560
 .meta p:last-child { text-align: right; }
 
 @media (max-width: 900px) {
+  .ask-say, .mock, .screens .s1, .screens .s2 { grid-column: 1 / -1; }
+  .mock { margin-top: 48px; aspect-ratio: 4 / 5; }
+  .mock-results { left: 5%; right: 5%; }
+  .mock-box { left: 5%; right: 5%; }
+  .screens .s2 { margin-top: 0; }
   .cta .say, .cta .shot { grid-column: 1 / -1; }
   .cta .shot { margin-top: 48px; }
   .split { grid-template-columns: minmax(0, 1fr); }
@@ -332,7 +384,7 @@ footer { background: var(--ink); color: var(--accent-ink); min-height: clamp(560
     <span class="line">every file.</span>
   </h1>
   <div class="hero-foot">
-    <p>It reads what's in each file in your Downloads and Desktop, finds the folder it belongs in, and asks before moving anything. A free Mac app, in early beta.</p>
+    <p>It reads what's in each file in your Downloads and Desktop, finds the folder it belongs in, and asks before moving anything. A Mac app, in early beta.</p>
     <a class="button" href="https://github.com/smammadov1994/pigeonhole/releases/latest/download/pigeonhole-mac-arm64.dmg">Download for Mac</a>
   </div>
 </header>
@@ -398,6 +450,37 @@ footer { background: var(--ink); color: var(--accent-ink); min-height: clamp(560
     <div class="f3 edge"><p>IMG_4021.heic scored 0.41 for Photos, under the bar, so it stayed in Downloads with its best guess shown. A chat model on your own machine can take a second look, if you want one.</p><h3>Leaves the unsure ones</h3></div>
     <div class="f4 edge mirror"><p>Installers go to Installers and screenshots to Screenshots without any AI. Add your own rules by file type or name.</p><h3>Rules go first</h3></div>
     <div class="f5 edge"><p>Ask for &ldquo;the lease I signed in March&rdquo;, &ldquo;a photo of the beach&rdquo; or &ldquo;the call about pricing&rdquo;. Documents, pictures, recordings and videos are searched by what they say, show and sound like. <a class="link" href="https://huggingface.co/onnx-community/embeddinggemma-2-ONNX">EmbeddingGemma 2</a> listens to the audio, on your Mac.</p><h3>Finds anything you describe</h3></div>
+  </section>
+
+  <section class="ask-demo edge" id="search" aria-labelledby="search-h">
+    <div class="ask-say">
+      <h2 id="search-h">Ask for it in your own words.</h2>
+      <p>Type what you remember: what a file says, what a picture shows, what someone said in a recording. PigeonHole finds it on your Mac, and one click opens it.</p>
+      <p class="sr-only">An animation of PigeonHole's search. Typing &ldquo;the lease I signed in March&rdquo; finds the signed lease; &ldquo;a painting of a boat at sea&rdquo; finds Redon's Flower Clouds; &ldquo;voicemail from my landlord about rent&rdquo; finds the recording, heard at 0:42; &ldquo;the offsite in Lisbon&rdquo; finds the video, said at 3:10.</p>
+    </div>
+    <div class="mock" data-ui aria-hidden="true">
+      <img class="mock-sky" src="img/flower-clouds.jpg" width="1686" height="1399" loading="lazy" alt="">
+      <div class="mock-results" id="mock-results"></div>
+      <div class="mock-box">
+        <span class="mock-q"><span id="mock-q"></span><span class="mock-caret"></span></span>
+        <span class="mock-dots" id="mock-dots"><i></i><i></i><i></i></span>
+        <span class="mock-go"><svg viewBox="0 0 20 20" width="15" height="15"><path d="M10 15V5m0 0-4.5 4.5M10 5l4.5 4.5" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+      </div>
+    </div>
+  </section>
+
+  <section class="screens edge" aria-labelledby="screens-h">
+    <h2 id="screens-h">Light or dark, on a painting that drifts.</h2>
+    <div class="grid">
+      <figure class="s1">
+        <img src="img/app-ready.jpg" width="1600" height="1032" loading="lazy" alt="PigeonHole in light mode: a sidebar of places and folders drawn as little sailing boats, and a glass list of eight files ready to move, each with the folder it's going to, over a faded Redon painting.">
+        <figcaption>Every file, and the folder it's going to. Nothing moves until you say.</figcaption>
+      </figure>
+      <figure class="s2">
+        <img src="img/app-search-dark.jpg" width="1600" height="1032" loading="lazy" alt="PigeonHole in dark mode: a search for &ldquo;the lease I signed in March&rdquo; has found Lease_Flat_4B_signed.docx, with the first line of the lease beneath it.">
+        <figcaption>In dark mode, a search finds the lease by what it says.</figcaption>
+      </figure>
+    </div>
   </section>
 
   <section class="how split" id="how" aria-labelledby="clause">
@@ -491,9 +574,9 @@ Move these 10 files? [y/N] y
   <section class="cta edge" id="install" aria-labelledby="install-h">
     <div class="say">
       <h2 class="blank" id="install-h">Give your Downloads a <a class="home" href="https://github.com/smammadov1994/pigeonhole/releases/latest/download/pigeonhole-mac-arm64.dmg">home</a>.</h2>
-      <p class="after">PigeonHole is a free app for your Mac. Install it like any other app; it walks you through the rest.</p>
+      <p class="after">PigeonHole is an app for your Mac. Install it like any other app; it walks you through the rest.</p>
       <ol class="steps">
-        <li><strong>Download it</strong><span>PigeonHole for Mac, for Apple Silicon. About 190 MB.</span></li>
+        <li><strong>Download it</strong><span>PigeonHole for Mac, for Apple Silicon.</span></li>
         <li><strong>Drag it into Applications</strong><span>Open the file you downloaded and drag PigeonHole onto the Applications folder.</span></li>
         <li><strong>Open it</strong><span>The first time, macOS asks you to confirm: System Settings, Privacy &amp; Security, Open Anyway. This beta isn't signed with an Apple certificate yet.</span></li>
       </ol>
@@ -516,7 +599,7 @@ Move these 10 files? [y/N] y
         <li>Since 2026</li>
       </ul>
       <div class="prose">
-        <p><img class="cap" src="img/dovecote.jpg" width="1400" height="971" loading="lazy" alt="Claes Jansz. Visscher's etching of a Dutch farmhouse with a dovecote under its roof."><strong>PigeonHole</strong> takes its name from the dovecote. Before the word meant a slot in a writing desk or a post office sorting frame, a PigeonHole was a nesting hole, one for every bird, and each bird flew home to its own. This one is for files. It is a free Mac app, open source under the MIT licence, and was made in 2026 by Seymur Mammadov.</p>
+        <p><img class="cap" src="img/dovecote.jpg" width="1400" height="971" loading="lazy" alt="Claes Jansz. Visscher's etching of a Dutch farmhouse with a dovecote under its roof."><strong>PigeonHole</strong> takes its name from the dovecote. Before the word meant a slot in a writing desk or a post office sorting frame, a PigeonHole was a nesting hole, one for every bird, and each bird flew home to its own. This one is for files. It is a Mac app, open source under the MIT licence, and was made in 2026 by Seymur Mammadov.</p>
         <p>The paintings and prints on this page are public domain, from the Art Institute of Chicago. The drop capital is <em>Farmhouse with Dovecotes</em> by Claes Jansz. Visscher, 1620.</p>
       </div>
     </div>
@@ -525,7 +608,7 @@ Move these 10 files? [y/N] y
 
 <footer class="edge">
   <div class="notes">
-    <div><span>PigeonHole sorts files on your own computer.</span><span>Free and open source, MIT licence.</span></div>
+    <div><span>PigeonHole sorts files on your own computer.</span><span>Open source, MIT licence.</span></div>
     <div><a class="link" href="https://github.com/smammadov1994/pigeonhole">Source on GitHub</a><a class="link" href="#top">Back to top</a></div>
   </div>
   <a class="start" href="https://github.com/smammadov1994/pigeonhole/releases/latest/download/pigeonhole-mac-arm64.dmg">Get PigeonHole</a>
@@ -700,6 +783,48 @@ Move these 10 files? [y/N] y
     }
   }, { rootMargin: "0px 0px 20% 0px" });
   for (const [selector, enter] of entrances) document.querySelectorAll(selector).forEach((el) => { el.__enter = enter; io.observe(el); });
+})();
+</script>
+<script>
+/* The search demo: types a question, waits a beat with three dots, and the answer rises onto the glass. Then the next. */
+(() => {
+  const still = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const box = document.querySelector(".mock"); if (!box) return;
+  const q = document.getElementById("mock-q"), dots = document.getElementById("mock-dots"), results = document.getElementById("mock-results");
+  const tile = (kind) => ({ tile: kind });
+  const searches = [
+    { ask: "the lease I signed in March", rows: [{ ...tile("docx"), name: "Lease_Flat_4B_signed.docx", meta: "Contracts · Documents", snip: "This lease agreement is made on 3 March 2026 between Harbour Lane…" }] },
+    { ask: "a painting of a boat at sea", rows: [{ picture: true, name: "redon-flower-clouds.jpg", meta: "Art · Pictures" }] },
+    { ask: "voicemail from my landlord about rent", rows: [{ ...tile("m4a"), name: "Voicemail, 14 October.m4a", meta: "Recordings · Music · heard at 0:42" }] },
+    { ask: "the offsite in Lisbon", rows: [{ ...tile("mp4"), name: "team-offsite-lisbon.mp4", meta: "Movies · said at 3:10" }, { ...tile("html"), name: "train-tickets-lisbon.html", meta: "Personal · Documents", snip: "Your train tickets from Porto to Lisbon on 22 November…" }] },
+  ];
+  const el = (tag, cls, text) => { const n = document.createElement(tag); if (cls) n.className = cls; if (text) n.textContent = text; return n; };
+  function show(s) {
+    const head = el("div", "mock-head", `${s.rows.length} ${s.rows.length === 1 ? "match" : "matches"}`);
+    results.replaceChildren(head, ...s.rows.map((r, i) => {
+      const thumb = el("div", "mock-thumb", r.tile);
+      if (r.picture) { const img = el("img"); img.src = "img/flower-clouds.jpg"; img.alt = ""; thumb.replaceChildren(img); }
+      const cell = el("div"); cell.append(el("div", "mock-name", r.name), el("div", "mock-meta", r.meta)); if (r.snip) cell.append(el("div", "mock-snip", r.snip));
+      const row = el("div", "mock-row"); row.style.transitionDelay = `${120 + i * 110}ms`; row.append(thumb, cell); return row;
+    }));
+    requestAnimationFrame(() => results.classList.add("on"));
+  }
+  if (still) { q.textContent = searches[0].ask; show(searches[0]); return; }
+  const wait = (ms) => new Promise((r) => setTimeout(r, ms));
+  let visible = false, running = false;
+  async function loop() {
+    if (running) return; running = true;
+    for (let i = 0; visible; i = (i + 1) % searches.length) {
+      const s = searches[i];
+      results.classList.remove("on"); await wait(380);
+      q.textContent = "";
+      for (const ch of s.ask) { q.textContent += ch; await wait(38 + Math.random() * 45); }
+      dots.classList.add("on"); await wait(950); dots.classList.remove("on");
+      show(s); await wait(3200);
+    }
+    running = false;
+  }
+  new IntersectionObserver(([e]) => { visible = e.isIntersecting; if (visible) loop(); }, { threshold: 0.3 }).observe(box);
 })();
 </script>
 </body>
