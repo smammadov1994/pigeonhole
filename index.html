@@ -294,6 +294,67 @@ em { font-style: italic; }
 .cta .shot { grid-column: 8 / span 5; margin: 0; align-self: center; }
 .cta .shot img { width: 100%; height: auto; }
 
+/* The three steps, played: a download, the drag into Applications, the app opening. An interface fragment (data-ui). */
+.film .film-stage { position: relative; aspect-ratio: 16 / 11; overflow: hidden; background: var(--surface); font: 15px/1.35 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; letter-spacing: 0; color: #131D45; }
+.film figcaption { margin-top: 14px; font-size: var(--step-small); color: var(--muted); }
+.sc { position: absolute; inset: 0; display: grid; place-items: center; opacity: 0; visibility: hidden; transition: opacity 0.5s var(--ease-out), visibility 0s 0.5s; }
+.film-stage[data-scene="1"] .sc1, .film-stage[data-scene="2"] .sc2, .film-stage[data-scene="3"] .sc3 { opacity: 1; visibility: visible; transition: opacity 0.5s var(--ease-out); }
+.dl { width: 80%; display: grid; grid-template-columns: 52px 1fr; gap: 18px; align-items: center; padding: 26px 28px; background: #F8F2E6; border-radius: 16px; }
+.dl .dmg { width: 52px; height: 62px; }
+.dl-text { display: grid; gap: 8px; min-width: 0; }
+.dl-text b { font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.dl-bar { height: 8px; border-radius: 4px; background: rgba(19, 29, 69, 0.12); overflow: hidden; }
+.dl-bar i { display: block; height: 100%; width: 0; background: #131D45; border-radius: inherit; }
+.film-stage.filled .dl-bar i { width: 100%; transition: width 1.8s var(--ease-in-out); } /* empties at once when the loop starts over */
+.dl-note { color: #6b6f86; font-size: 13px; }
+.dl-done, .film-stage.done .dl-going { display: none; }
+.film-stage.done .dl-done { display: inline; }
+.inst { width: 88%; padding: 26px 28px 30px; background: #FFFFFF; border-radius: 14px; display: grid; gap: 22px; }
+.inst-title { text-align: center; font: 500 21px/1.2 var(--serif); letter-spacing: -0.01em; color: #131D45; }
+.inst-row { display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: 14px; }
+.inst-arrow { width: 100%; height: 24px; opacity: 0.7; }
+.appicon, .folder { display: grid; justify-items: center; gap: 8px; font-size: 13px; color: #3d3d3d; }
+.appicon em, .folder em { font-style: normal; }
+.appicon { position: relative; z-index: 1; transition: transform 1.15s var(--ease-in-out); }
+.appicon .tile { width: 80px; height: 80px; border-radius: 19px; background: #FFFFFF; display: grid; place-items: center; box-shadow: 0 6px 16px -6px rgba(19, 29, 69, 0.35), 0 0 0 1px rgba(19, 29, 69, 0.06); } /* taste-skill-ignore: the app icon's own tile, part of the interface fragment */
+.boat.big { width: 62px; height: 62px; }
+.folder svg { width: 80px; height: 65px; transition: transform 0.3s var(--ease-out); }
+.film-stage.landed .folder svg { transform: scale(1.12); }
+.film-stage.landed .appicon { opacity: 0; transition: transform 1.15s var(--ease-in-out), opacity 0.2s; }
+.mini { width: 90%; aspect-ratio: 16 / 10; display: grid; grid-template-columns: 34% 1fr; border-radius: 12px; overflow: hidden; background: #F4F4F6; transform: scale(0.92); opacity: 0; transition: transform 0.6s var(--ease-out), opacity 0.4s; }
+.film-stage[data-scene="3"] .mini { transform: none; opacity: 1; }
+.m-side { padding: 12px 10px; display: grid; align-content: start; gap: 9px; background: rgba(255, 255, 255, 0.55); }
+.m-lights { display: flex; gap: 5px; }
+.m-lights i { width: 8px; height: 8px; border-radius: 50%; background: #E06A5F; }
+.m-lights i:nth-child(2) { background: #E8B44C; }
+.m-lights i:nth-child(3) { background: #5DB866; }
+.m-brand { font-weight: 650; font-size: 14px; margin: 2px 0 4px; }
+.m-folder { display: grid; grid-template-columns: 30px 1fr; gap: 8px; align-items: center; }
+.m-folder .boat { width: 30px; height: 30px; }
+.m-folder .hullgroup { transform-box: view-box; transform-origin: 18px 28px; }
+.film-stage.rocking .m-folder:nth-child(3) .hullgroup { animation: rock 1.9s ease-in-out; }
+.film-stage.rocking .m-folder:nth-child(4) .hullgroup { animation: rock 1.9s ease-in-out 0.25s; }
+.film-stage.rocking .m-folder:nth-child(5) .hullgroup { animation: rock 1.9s ease-in-out 0.5s; }
+.film-stage.rocking .m-folder:nth-child(6) .hullgroup { animation: rock 1.9s ease-in-out 0.75s; }
+@keyframes rock { 0%, 100% { transform: rotate(0); } 18% { transform: rotate(-9deg); } 45% { transform: rotate(7deg); } 70% { transform: rotate(-3.5deg); } }
+.m-lines { display: grid; gap: 4px; }
+.m-lines i { display: block; height: 6px; border-radius: 3px; background: rgba(19, 29, 69, 0.18); }
+.m-lines i + i { width: 40%; background: rgba(19, 29, 69, 0.09); }
+.m-main { position: relative; padding: 16px 16px 46px; display: grid; align-content: start; gap: 10px; background: linear-gradient(rgba(255, 255, 255, 0.6), rgba(255, 255, 255, 0.6)), url("img/flower-clouds.jpg") 30% 40% / cover; } /* taste-skill-ignore: the app's own painted background, inside the fragment */
+.m-title { font-weight: 600; font-size: 15px; }
+.m-list { display: grid; gap: 3px; padding: 6px; border-radius: 12px; background: rgba(255, 255, 255, 0.55); }
+.m-row { display: grid; grid-template-columns: 18px 1fr 34px; gap: 8px; align-items: center; padding: 5px 6px; opacity: 0; transform: translateY(5px); transition: opacity 0.35s var(--ease-out), transform 0.4s var(--ease-out); }
+.film-stage[data-scene="3"] .m-row { opacity: 1; transform: none; }
+.film-stage[data-scene="3"] .m-row:nth-child(2) { transition-delay: 0.12s; }
+.film-stage[data-scene="3"] .m-row:nth-child(3) { transition-delay: 0.24s; }
+.film-stage[data-scene="3"] .m-row:nth-child(4) { transition-delay: 0.36s; }
+.m-tile { width: 18px; height: 18px; border-radius: 5px; background: rgba(19, 29, 69, 0.1); }
+.m-pill { height: 12px; border-radius: 6px; background: rgba(19, 29, 69, 0.08); }
+.m-search { position: absolute; left: 16px; right: 16px; bottom: 12px; padding: 7px 14px; border-radius: 14px; font-size: 12.5px; color: #8a8a8a; background: rgba(255, 255, 255, 0.6); }
+.steps li { transition: opacity 0.4s ease; }
+.steps.playing li { opacity: 0.45; }
+.steps.playing li.now { opacity: 1; }
+
 /* About: the name, with the dovecote as a drop capital. */
 .about { padding-block: 140px; }
 .facts { grid-column: 1 / span 2; list-style: none; margin: 0; padding: 0; font-size: var(--step-small); color: var(--muted); display: grid; gap: 8px; align-self: start; }
@@ -349,6 +410,20 @@ footer { background: var(--ink); color: var(--accent-ink); min-height: clamp(560
   .meta p:nth-child(2), .meta p:last-child { text-align: left; }
 }
 @media (max-width: 560px) {
+  .film .film-stage { aspect-ratio: 4 / 3; font-size: 12px; }
+  .dl { width: 88%; grid-template-columns: 36px 1fr; gap: 12px; padding: 16px 18px; }
+  .dl .dmg { width: 36px; height: 44px; }
+  .inst { width: 92%; padding: 16px 16px 18px; gap: 14px; }
+  .inst-title { font-size: 15px; }
+  .appicon .tile { width: 54px; height: 54px; border-radius: 13px; }
+  .boat.big { width: 42px; height: 42px; }
+  .folder svg { width: 54px; height: 44px; }
+  .appicon, .folder { font-size: 11px; }
+  .mini { width: 94%; }
+  .m-brand { font-size: 11px; }
+  .m-title { font-size: 12px; }
+  .m-folder { grid-template-columns: 22px 1fr; }
+  .m-folder .boat { width: 22px; height: 22px; }
   .top .wide { display: none; }
   .sentence { margin-top: 72px; font-size: 16vw; }
   .hero-foot { flex-direction: column-reverse; align-items: flex-start; }
@@ -575,7 +650,7 @@ Move these 10 files? [y/N] y
     <div class="say">
       <h2 class="blank" id="install-h">Give your Downloads a <a class="home" href="https://github.com/smammadov1994/pigeonhole/releases/latest/download/pigeonhole-mac-arm64.dmg">home</a>.</h2>
       <p class="after">PigeonHole is an app for your Mac. Install it like any other app; it walks you through the rest.</p>
-      <ol class="steps">
+      <ol class="steps" id="steps">
         <li><strong>Download it</strong><span>PigeonHole for Mac, for Apple Silicon.</span></li>
         <li><strong>Drag it into Applications</strong><span>Open the file you downloaded and drag PigeonHole onto the Applications folder.</span></li>
         <li><strong>Open it</strong><span>From Applications, like any other app. It's signed and checked by Apple, so it simply opens.</span></li>
@@ -585,9 +660,32 @@ Move these 10 files? [y/N] y
         <p class="note">On Windows or Linux, or happier in a terminal? <a class="link" href="https://github.com/smammadov1994/pigeonhole#run-it-with-docker-any-system">Run it with Docker</a>.</p>
       </div>
     </div>
-    <figure class="shot">
-      <img src="img/app-welcome.jpg" width="1240" height="800" loading="lazy" alt="PigeonHole's welcome screen on a Mac: the sentence 'A place for every file' beside Redon's Flower Clouds, with paper pigeons, and a Get started button.">
-      <figcaption>The first thing you'll see.</figcaption>
+    <figure class="shot film" aria-label="An animation of the three steps: the download, dragging PigeonHole into Applications, and PigeonHole opening.">
+      <div class="film-stage" id="film-stage" data-scene="3" data-ui aria-hidden="true">
+        <div class="sc sc1">
+          <div class="dl">
+            <svg class="dmg" viewBox="0 0 40 48"><path d="M4 3h22l10 10v32H4z" fill="#F8F2E6"/><path d="M26 3v10h10" fill="#D8CDB9"/><rect x="9" y="25" width="22" height="13" rx="2" fill="#24305E"/><text x="20" y="34.5" text-anchor="middle" font-size="7" font-weight="700" fill="#F6CBB4" font-family="-apple-system, sans-serif">DMG</text></svg>
+            <div class="dl-text"><b>pigeonhole-mac-arm64.dmg</b><span class="dl-bar"><i></i></span><span class="dl-note"><span class="dl-going">Downloading…</span><span class="dl-done">Downloaded</span></span></div>
+          </div>
+        </div>
+        <div class="sc sc2">
+          <div class="inst">
+            <p class="inst-title">Drag PigeonHole into Applications</p>
+            <div class="inst-row">
+              <span class="appicon" id="appicon"><span class="tile"><svg class="boat big" viewBox="0 0 36 36"><defs><linearGradient id="sF6CBB4" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#F6CBB4"/><stop offset="1" stop-color="#E39A74"/></linearGradient></defs><g class="hullgroup"><path d="M18 4h7l-7 3.6z" fill="#E5484D"/><path d="M18 4v21" stroke="#24305E" stroke-width="1.3" stroke-linecap="round"/><path d="M19 9.5V23h10.5z" fill="url(#sF6CBB4)"/><path d="M17 12v11H9.2z" fill="url(#sF6CBB4)" opacity=".75"/><path d="M5.5 24.5h25l-3.6 5.2H9.4z" fill="#24305E"/></g><path d="M2 32.5q2.5-1.6 5 0t5 0 5 0 5 0 5 0 5 0 5 0" fill="none" stroke="#3B5AA0" stroke-opacity=".4" stroke-width="1.3" stroke-linecap="round"/></svg></span><em>PigeonHole</em></span>
+              <svg class="inst-arrow" viewBox="0 0 136 30"><path d="M4 15h118M108 4l14 11-14 11" fill="none" stroke="#131D45" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              <span class="folder" id="folder"><svg viewBox="0 0 64 52"><path d="M3 9a4 4 0 0 1 4-4h16l6 6h28a4 4 0 0 1 4 4v30a4 4 0 0 1-4 4H7a4 4 0 0 1-4-4z" fill="#8FB7E8"/><path d="M3 17h58v28a4 4 0 0 1-4 4H7a4 4 0 0 1-4-4z" fill="#A9C9F0"/></svg><em>Applications</em></span>
+            </div>
+          </div>
+        </div>
+        <div class="sc sc3">
+          <div class="mini">
+            <div class="m-side"><span class="m-lights"><i></i><i></i><i></i></span><span class="m-brand">PigeonHole</span><div class="m-folder"><svg class="boat " viewBox="0 0 36 36"><defs><linearGradient id="sF6CBB4" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#F6CBB4"/><stop offset="1" stop-color="#E39A74"/></linearGradient></defs><g class="hullgroup"><path d="M18 4h7l-7 3.6z" fill="#E5484D"/><path d="M18 4v21" stroke="#24305E" stroke-width="1.3" stroke-linecap="round"/><path d="M19 9.5V23h10.5z" fill="url(#sF6CBB4)"/><path d="M17 12v11H9.2z" fill="url(#sF6CBB4)" opacity=".75"/><path d="M5.5 24.5h25l-3.6 5.2H9.4z" fill="#24305E"/></g><path d="M2 32.5q2.5-1.6 5 0t5 0 5 0 5 0 5 0 5 0 5 0" fill="none" stroke="#3B5AA0" stroke-opacity=".4" stroke-width="1.3" stroke-linecap="round"/></svg><span class="m-lines"><i style="width:70%"></i></span></div><div class="m-folder"><svg class="boat " viewBox="0 0 36 36"><defs><linearGradient id="sCAD8F3" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#CAD8F3"/><stop offset="1" stop-color="#8AA6DC"/></linearGradient></defs><g class="hullgroup"><path d="M18 4h7l-7 3.6z" fill="#2BB596"/><path d="M18 4v21" stroke="#24305E" stroke-width="1.3" stroke-linecap="round"/><path d="M19 9.5V23h10.5z" fill="url(#sCAD8F3)"/><path d="M17 12v11H9.2z" fill="url(#sCAD8F3)" opacity=".75"/><path d="M5.5 24.5h25l-3.6 5.2H9.4z" fill="#24305E"/></g><path d="M2 32.5q2.5-1.6 5 0t5 0 5 0 5 0 5 0 5 0 5 0" fill="none" stroke="#3B5AA0" stroke-opacity=".4" stroke-width="1.3" stroke-linecap="round"/></svg><span class="m-lines"><i style="width:55%"></i></span></div><div class="m-folder"><svg class="boat " viewBox="0 0 36 36"><defs><linearGradient id="sEACBE3" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#EACBE3"/><stop offset="1" stop-color="#B587C2"/></linearGradient></defs><g class="hullgroup"><path d="M18 4h7l-7 3.6z" fill="#EAB308"/><path d="M18 4v21" stroke="#24305E" stroke-width="1.3" stroke-linecap="round"/><path d="M19 9.5V23h10.5z" fill="url(#sEACBE3)"/><path d="M17 12v11H9.2z" fill="url(#sEACBE3)" opacity=".75"/><path d="M5.5 24.5h25l-3.6 5.2H9.4z" fill="#24305E"/></g><path d="M2 32.5q2.5-1.6 5 0t5 0 5 0 5 0 5 0 5 0 5 0" fill="none" stroke="#3B5AA0" stroke-opacity=".4" stroke-width="1.3" stroke-linecap="round"/></svg><span class="m-lines"><i style="width:64%"></i></span></div><div class="m-folder"><svg class="boat " viewBox="0 0 36 36"><defs><linearGradient id="sF4E3B4" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#F4E3B4"/><stop offset="1" stop-color="#DDB25E"/></linearGradient></defs><g class="hullgroup"><path d="M18 4h7l-7 3.6z" fill="#3B82F6"/><path d="M18 4v21" stroke="#24305E" stroke-width="1.3" stroke-linecap="round"/><path d="M19 9.5V23h10.5z" fill="url(#sF4E3B4)"/><path d="M17 12v11H9.2z" fill="url(#sF4E3B4)" opacity=".75"/><path d="M5.5 24.5h25l-3.6 5.2H9.4z" fill="#24305E"/></g><path d="M2 32.5q2.5-1.6 5 0t5 0 5 0 5 0 5 0 5 0 5 0" fill="none" stroke="#3B5AA0" stroke-opacity=".4" stroke-width="1.3" stroke-linecap="round"/></svg><span class="m-lines"><i style="width:50%"></i></span></div></div>
+            <div class="m-main"><span class="m-title">8 files ready to move</span><div class="m-list"><div class="m-row"><span class="m-tile"></span><span class="m-lines"><i style="width:62%"></i><i></i></span><span class="m-pill"></span></div><div class="m-row"><span class="m-tile"></span><span class="m-lines"><i style="width:48%"></i><i></i></span><span class="m-pill"></span></div><div class="m-row"><span class="m-tile"></span><span class="m-lines"><i style="width:70%"></i><i></i></span><span class="m-pill"></span></div><div class="m-row"><span class="m-tile"></span><span class="m-lines"><i style="width:54%"></i><i></i></span><span class="m-pill"></span></div></div><span class="m-search">Search anything</span></div>
+          </div>
+        </div>
+      </div>
+      <figcaption>Download, drag, open. Then it walks you through the rest.</figcaption>
     </figure>
   </section>
 
@@ -825,6 +923,32 @@ Move these 10 files? [y/N] y
     running = false;
   }
   new IntersectionObserver(([e]) => { visible = e.isIntersecting; if (visible) loop(); }, { threshold: 0.3 }).observe(box);
+})();
+</script>
+<script>
+/* The install steps, played: the download fills, the icon slides into Applications, the app opens and its boats rock.
+   The step beside it lights up as it plays. Still under reduced motion: the app, open. */
+(() => {
+  const stage = document.getElementById("film-stage"), steps = document.getElementById("steps");
+  if (!stage || !steps || matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+  const items = [...steps.children], icon = document.getElementById("appicon"), folder = document.getElementById("folder");
+  const wait = (ms) => new Promise((r) => setTimeout(r, ms));
+  const scene = (n) => { stage.dataset.scene = String(n); items.forEach((li, i) => li.classList.toggle("now", i === n - 1)); };
+  let visible = false, running = false;
+  async function play() {
+    if (running) return; running = true; steps.classList.add("playing");
+    while (visible) {
+      stage.classList.remove("filled", "done", "landed", "rocking"); icon.style.transform = "";
+      scene(1); await wait(500); stage.classList.add("filled"); await wait(1900); stage.classList.add("done"); await wait(900);
+      scene(2); await wait(900);
+      const a = icon.getBoundingClientRect(), b = folder.getBoundingClientRect();
+      icon.style.transform = `translateX(${b.left + b.width / 2 - (a.left + a.width / 2)}px)`;
+      await wait(1150); stage.classList.add("landed"); await wait(700);
+      scene(3); await wait(700); stage.classList.add("rocking"); await wait(3800);
+    }
+    steps.classList.remove("playing"); items.forEach((li) => li.classList.remove("now")); running = false;
+  }
+  new IntersectionObserver(([e]) => { visible = e.isIntersecting; if (visible) play(); }, { threshold: 0.35 }).observe(stage);
 })();
 </script>
 </body>
