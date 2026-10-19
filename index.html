@@ -1,0 +1,709 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>pigeonhole</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<meta name="description" content="pigeonhole reads what's in each file in your Downloads and Desktop, finds the folder it belongs in, and asks before moving anything.">
+<style>
+@font-face { font-family: "Erode"; src: url("fonts/erode-400.woff2") format("woff2"); font-weight: 400; font-style: normal; font-display: swap; }
+@font-face { font-family: "Erode"; src: url("fonts/erode-400-italic.woff2") format("woff2"); font-weight: 400; font-style: italic; font-display: swap; }
+@font-face { font-family: "Erode"; src: url("fonts/erode-500.woff2") format("woff2"); font-weight: 500; font-style: normal; font-display: swap; }
+@font-face { font-family: "Erode"; src: url("fonts/erode-600.woff2") format("woff2"); font-weight: 600; font-style: normal; font-display: swap; }
+
+/* Layout: the sentence is the layout. Each section is a short statement with its evidence beside it, on one
+   12-column grid with 28px margins; a dream at night (Redon's ultramarine ground, cloud-peach ink). */
+:root {
+  --bg: #131D45;
+  --surface: #1B2858;
+  --deep: #0B1332;
+  --ink: #F6CBB4;
+  --muted: #C9A7A2;
+  --accent: #F6CBB4;
+  --accent-strong: #FFE0CF;
+  --accent-ink: #131D45;
+  --on-ink-muted: #4A4F78;
+
+  --serif: "Erode", "Iowan Old Style", "Palatino Linotype", Georgia, serif;
+  --mono: monospace; /* taste-skill-ignore: literal terminal output in <pre><code> only */
+
+  --step-small: clamp(0.8125rem, 0.79rem + 0.1vw, 0.875rem);
+  --step-body: clamp(1.0625rem, 1rem + 0.25vw, 1.1875rem);
+  --step-lead: clamp(1.25rem, 1.1rem + 0.7vw, 1.625rem);
+  --step-head: clamp(2rem, 1.3rem + 3.2vw, 4rem);
+  --step-display: clamp(3.4rem, 0.4rem + 11.5vw, 12rem);
+
+  --m: clamp(20px, 2vw, 28px);
+  --gap: clamp(12px, 1.6vw, 24px);
+
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-in-out: cubic-bezier(0.76, 0, 0.24, 1);
+  --ease-soft: cubic-bezier(0.33, 1, 0.68, 1);
+  --t-press: 140ms;
+  --t-hover: 180ms;
+  --t-ui: 240ms;
+
+  color-scheme: dark;
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--serif);
+  font-size: var(--step-body);
+  line-height: 1.5;
+  overflow-x: hidden;
+}
+img { max-width: 100%; height: auto; display: block; }
+a { color: inherit; }
+h1, h2, h3, p { margin: 0; }
+h1, h2, h3 { font-weight: 500; letter-spacing: -0.03em; line-height: 0.98; text-wrap: balance; }
+p { text-wrap: pretty; }
+em { font-style: italic; }
+:focus-visible { outline: 3px solid var(--accent); outline-offset: 3px; }
+::selection { background: var(--ink); color: var(--bg); }
+
+.edge {
+  padding-left: max(var(--m), env(safe-area-inset-left, 0px));
+  padding-right: max(var(--m), env(safe-area-inset-right, 0px));
+}
+.grid { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); column-gap: var(--gap); }
+
+/* One button shape (square corners, solid ink) and one link manner, everywhere. */
+.button {
+  display: inline-flex; align-items: center; justify-content: center;
+  min-height: 52px; padding: 0 1.3em; border: 0; border-radius: 0;
+  background: var(--accent); color: var(--accent-ink);
+  font: 600 var(--step-body)/1 var(--serif); letter-spacing: 0; text-decoration: none; cursor: pointer;
+  transition: transform var(--t-press) var(--ease-out), background-color var(--t-hover) ease;
+}
+.button:active { transform: scale(0.97); }
+.button[disabled] { opacity: 0.45; cursor: default; }
+.link {
+  text-decoration: underline; text-decoration-color: color-mix(in srgb, currentColor 35%, transparent);
+  text-underline-offset: 0.2em; text-decoration-thickness: 0.07em;
+  transition: text-decoration-color var(--t-hover) ease;
+}
+.textbutton { background: none; border: 0; padding: 0; color: inherit; font: inherit; cursor: pointer; }
+@media (hover: hover) and (pointer: fine) {
+  .button:not([disabled]):hover { background-color: var(--accent-strong); }
+  .link:hover { text-decoration-color: currentColor; }
+}
+
+/* Hero: the sentence, with a row of pigeonholes standing in for the missing word. */
+.hero { padding-block: 22px clamp(56px, 9vh, 112px); }
+.top { display: flex; align-items: baseline; justify-content: space-between; gap: 24px; font-size: var(--step-small); }
+.wordmark { font-weight: 600; font-size: var(--step-body); letter-spacing: -0.01em; text-decoration: none; }
+.top nav { display: flex; gap: 28px; }
+.sentence {
+  margin-top: clamp(96px, 20vh, 220px);
+  font-size: var(--step-display); line-height: 0.95; letter-spacing: -0.035em; font-weight: 500;
+}
+.sentence .line { display: flex; align-items: baseline; gap: 0.18em; }
+.slot {
+  flex: 1; min-width: 2.2em; height: 0.72em; position: relative; overflow: hidden;
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 60 72'%3E%3Cpath d='M7 72V31a23 23 0 0 1 46 0v41z'/%3E%3C/svg%3E") 0 0 / auto 100% round no-repeat;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 60 72'%3E%3Cpath d='M7 72V31a23 23 0 0 1 46 0v41z'/%3E%3C/svg%3E") 0 0 / auto 100% round no-repeat;
+}
+.slot img { width: 100%; height: 100%; object-fit: cover; object-position: 60% 30%; }
+.hero-foot { margin-top: clamp(40px, 7vh, 80px); display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 28px 48px; }
+.hero-foot p { font-size: var(--step-lead); line-height: 1.35; max-width: 44ch; }
+
+/* The same picture, opened to its full width. */
+.window { margin: 0; }
+.window .frame { position: relative; overflow: hidden; aspect-ratio: 1686 / 1399; max-height: 92svh; width: 100%; }
+.window img { width: 100%; height: 100%; object-fit: cover; object-position: 50% 40%; }
+.window canvas { position: absolute; inset: 0; width: 100%; height: 100%; }
+.credit { font-size: var(--step-small); color: var(--muted); padding-top: 12px; }
+
+/* Showcase: what you hand it on the dark field, what it makes of it on the light one. */
+.split { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
+.field { position: relative; min-height: clamp(620px, 90svh, 900px); display: flex; flex-direction: column; }
+.showcase .in { background: var(--deep); color: var(--ink); }
+.showcase .out { background: var(--ink); color: var(--accent-ink); }
+.in-body { margin-top: 18%; margin-left: calc(100% / 6 - var(--m)); max-width: min(560px, calc(100% - 100% / 6)); display: grid; gap: 22px; }
+.lead-in { color: var(--muted); }
+.files { list-style: none; margin: 0; padding: 0; display: grid; gap: 2px; font-size: var(--step-lead); line-height: 1.3; }
+.file {
+  display: block; width: 100%; text-align: left; padding: 3px 8px; margin-left: -8px;
+  background: none; border: 0; color: var(--ink); font: inherit; letter-spacing: -0.01em; cursor: pointer;
+  overflow-wrap: anywhere; transition: background-color var(--t-hover) ease, color var(--t-hover) ease;
+}
+.file[aria-pressed="true"] { background: var(--ink); color: var(--accent-ink); }
+@media (hover: hover) and (pointer: fine) { .file:hover { background: var(--surface); } .file[aria-pressed="true"]:hover { background: var(--ink); } }
+.file.gone { visibility: hidden; }
+.file-why { min-height: 1.5em; color: var(--muted); font-size: var(--step-body); }
+.controls { display: flex; flex-wrap: wrap; align-items: center; gap: 14px 26px; }
+.out-body { margin-top: 18%; padding-inline: var(--m); display: flex; justify-content: center; }
+.split-head { position: absolute; bottom: 32px; font-size: var(--step-head); }
+.in .split-head { left: max(var(--m), env(safe-area-inset-left, 0px)); }
+.out .split-head { right: max(var(--m), env(safe-area-inset-right, 0px)); }
+.showcase .in, .showcase .out { padding-bottom: 140px; }
+
+/* The plan, as pigeonhole prints it, grouped by folder. Its own interface: monospace and its own rules apply. */
+.plan { width: min(100%, 520px); font-size: var(--step-body); line-height: 1.45; color: var(--accent-ink); font-variant-numeric: tabular-nums; display: grid; gap: 14px; }
+.plan h4 { margin: 0 0 2px; font-size: var(--step-small); font-weight: 600; color: var(--on-ink-muted); letter-spacing: 0; }
+.plan ul { list-style: none; margin: 0; padding: 0; }
+
+.plan .row { display: flex; justify-content: space-between; gap: 16px; padding: 1px 6px; margin-inline: -6px; transition: background-color var(--t-hover) ease; }
+.plan .row span:first-child { overflow-wrap: anywhere; min-width: 0; }
+.plan .row span:last-child { white-space: nowrap; color: var(--on-ink-muted); }
+.plan .row.lit { background: var(--accent-ink); color: var(--ink); }
+.plan .row.lit span:last-child { color: var(--muted); }
+.plan .row .moved { font-weight: 600; }
+.plan-status { margin-top: 6px; font-weight: 600; }
+
+/* How it works: drag through the stages. */
+.how { position: relative; }
+.how .left { background: var(--surface); }
+.how .right { background: var(--bg); }
+.how .field { min-height: clamp(560px, 82svh, 820px); padding-bottom: 150px; }
+.clause { margin: clamp(48px, 9vh, 96px) 0 0 max(var(--m), env(safe-area-inset-left, 0px)); padding-right: var(--m); }
+.clause h2 { font-size: var(--step-head); max-width: 9.5em; }
+.clause p { color: var(--ink); font-size: var(--step-lead); letter-spacing: -0.01em; margin-top: 18px; max-width: 26ch; line-height: 1.35; }
+.how .right .stagewrap { margin-top: clamp(48px, 9vh, 96px); padding-inline: var(--m); display: flex; justify-content: center; }
+.term {
+  width: min(100%, 460px); background: var(--deep); color: var(--ink);
+  font: 500 0.8125rem/1.6 var(--mono); padding: 20px 22px 22px;
+  white-space: pre-wrap; overflow-wrap: anywhere; margin: 0;
+}
+.term code { font: inherit; }
+.term .p { color: var(--muted); }
+.term .ok { font-weight: 600; }
+.stage { display: none; }
+.stage.on { display: block; animation: fadein var(--t-ui) ease both; }
+@keyframes fadein { from { opacity: 0; } to { opacity: 1; } }
+.scrub {
+  position: absolute; left: 0; right: 0; bottom: 40px; z-index: 2;
+  padding-left: max(var(--m), env(safe-area-inset-left, 0px)); padding-right: max(var(--m), env(safe-area-inset-right, 0px));
+}
+.track-holder { position: relative; }
+.rail { position: relative; height: 8px; background: color-mix(in srgb, var(--ink) 25%, transparent); }
+.rail .done { position: absolute; inset: 0; background: var(--ink); transform-origin: left; transform: scaleX(0); transition: transform var(--t-ui) var(--ease-out); }
+.scrub input[type="range"] {
+  -webkit-appearance: none; appearance: none; position: absolute; left: -16px; top: -12px; width: calc(100% + 32px);
+  height: 32px; margin: 0; background: transparent; cursor: pointer;
+}
+.scrub input[type="range"]::-webkit-slider-runnable-track { height: 32px; background: transparent; }
+.scrub input[type="range"]::-moz-range-track { height: 32px; background: transparent; }
+.scrub input[type="range"]::-webkit-slider-thumb { -webkit-appearance: none; width: 32px; height: 32px; border: 0; border-radius: 0; background: var(--accent); }
+.scrub input[type="range"]::-moz-range-thumb { width: 32px; height: 32px; border: 0; border-radius: 0; background: var(--accent); }
+.stops { position: relative; height: 1.6em; margin-top: 18px; }
+.stops button { position: absolute; top: 0; color: var(--muted); font-size: var(--step-body); transform: translateX(-50%); }
+.stops button:nth-child(1) { left: 0; transform: none; }
+.stops button:nth-child(2) { left: 33.333%; }
+.stops button:nth-child(3) { left: 66.667%; }
+.stops button:nth-child(4) { left: auto; right: 0; transform: none; }
+.stops button[aria-current="step"] { color: var(--ink); }
+
+/* Features: one benefit per field, small text near the top, the big phrase at the foot. */
+.fields > div { min-height: clamp(440px, 66svh, 700px); display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); grid-template-rows: auto 1fr; column-gap: var(--gap); padding-block: clamp(36px, 6vh, 64px) 28px; }
+.fields .f1 { background: var(--ink); color: var(--accent-ink); }
+.fields .f2 { background: var(--bg); }
+.fields .f3 { background: var(--surface); }
+.fields .f4 { background: var(--deep); }
+.fields p { grid-column: 8 / span 5; grid-row: 1; max-width: 30ch; font-size: var(--step-lead); line-height: 1.3; }
+.fields h3 { grid-column: 1 / -1; grid-row: 2; align-self: end; font-size: var(--step-display); line-height: 0.88; letter-spacing: -0.045em; max-width: 6.4em; }
+.fields .mirror p { grid-column: 2 / span 5; }
+.fields .mirror h3 { justify-self: end; text-align: right; }
+
+/* List: the promises as a table pushed right. */
+.list { padding-block: clamp(96px, 12vh, 150px) clamp(120px, 16vh, 200px); }
+.list h2 { font-size: var(--step-head); line-height: 0.98; max-width: 14em; }
+.list h2 .indent { padding-left: 3vw; }
+.list .grid { margin-top: 64px; align-items: end; }
+.list figure { grid-column: 1 / span 4; margin: 0; align-self: end; }
+.list figure img { width: 100%; aspect-ratio: 4 / 5; object-fit: cover; object-position: 50% 30%; }
+.list .name { grid-column: 7 / span 1; align-self: start; font-size: var(--step-small); color: var(--muted); padding-top: 3px; }
+.rows { grid-column: 8 / span 5; list-style: none; margin: 0; padding: 0; align-self: start; }
+.rows li { display: grid; grid-template-columns: 30% 1fr auto; gap: 12px; font-size: var(--step-body); line-height: 1.4; }
+.rows li + li { margin-top: 26px; }
+.rows li:nth-child(4n+1):not(:first-child) { margin-top: 44px; }
+.rows .k { color: var(--muted); }
+.rows .v { text-align: right; font-variant-numeric: tabular-nums; }
+
+/* CTA: the sentence with a blank. */
+.cta { padding-block: clamp(64px, 10vh, 120px) clamp(120px, 16vh, 200px); display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); column-gap: var(--gap); align-items: start; }
+.cta .say { grid-column: 1 / span 6; }
+.cta .term { grid-column: 7 / span 6; justify-self: end; }
+.blank { font-size: var(--step-head); line-height: 1.05; letter-spacing: -0.03em; font-weight: 500; max-width: 11em; }
+.blank input, .blank button {
+  vertical-align: baseline; font: inherit; line-height: 1.1; letter-spacing: inherit; border: 0; border-radius: 0; padding: 0 0.18em;
+}
+.blank input { width: 6.5em; background: var(--surface); color: var(--ink); }
+.blank input::placeholder { color: var(--muted); }
+.blank button { background: var(--accent); color: var(--accent-ink); cursor: pointer; transition: background-color var(--t-hover) ease, transform var(--t-press) var(--ease-out); }
+.blank button:active { transform: scale(0.97); }
+@media (hover: hover) and (pointer: fine) { .blank button:hover { background: var(--accent-strong); } }
+.nowrap { white-space: nowrap; }
+.cta .after { margin-top: 22px; color: var(--ink); max-width: 52ch; }
+.cta .term { margin-top: 0.4rem; width: min(100%, 600px); font-size: 0.875rem; }
+
+/* About: the name, with the dovecote as a drop capital. */
+.about { padding-block: 140px; }
+.facts { grid-column: 1 / span 2; list-style: none; margin: 0; padding: 0; font-size: var(--step-small); color: var(--muted); display: grid; gap: 8px; align-self: start; }
+.prose { grid-column: 3 / span 10; font-size: var(--step-lead); line-height: 1.22; letter-spacing: -0.01em; }
+.prose p + p { margin-top: 1.2em; color: var(--muted); }
+.prose .cap { float: left; width: 4.8em; height: 4.8em; margin: 0.22em 0.55em 0 0; object-fit: cover; object-position: 60% 42%; }
+.prose strong { font-weight: 600; }
+
+/* Footer: the way to start, as the headline. */
+footer { background: var(--ink); color: var(--accent-ink); min-height: clamp(560px, 86svh, 860px); display: flex; flex-direction: column; padding-block: 40px 28px; }
+.notes { display: flex; justify-content: space-between; gap: 24px; font-size: var(--step-small); }
+.notes div { display: grid; gap: 4px; max-width: 46ch; }
+.start { margin-top: auto; font-size: var(--step-display); line-height: 0.9; letter-spacing: -0.045em; font-weight: 500; text-decoration: none; display: inline-block; }
+.meta { margin-top: 36px; display: grid; grid-template-columns: 1fr 2fr 1fr; gap: 16px; font-size: var(--step-small); }
+.meta p:nth-child(2) { text-align: center; }
+.meta p:last-child { text-align: right; }
+
+@media (max-width: 900px) {
+  .cta .say, .cta .term { grid-column: 1 / -1; justify-self: stretch; }
+  .cta .term { margin-top: 40px; }
+  .split { grid-template-columns: minmax(0, 1fr); }
+  .field { min-height: 0; }
+  .showcase .in, .showcase .out { padding-bottom: 110px; }
+  .in-body { margin: 56px 0 0; padding-inline: max(var(--m), env(safe-area-inset-left, 0px)) var(--m); max-width: none; }
+  .out-body { margin-top: 110px; }
+  .showcase .out .split-head { top: 28px; bottom: auto; right: auto; left: max(var(--m), env(safe-area-inset-left, 0px)); }
+  .showcase .out { padding-bottom: 48px; }
+  .how .right { order: -1; padding-bottom: 130px; }
+  .how .field { min-height: 0; }
+  .how .left { padding-bottom: 48px; }
+  .how .right .stagewrap { margin-top: 40px; }
+  .scrub { top: auto; bottom: auto; }
+  .clause { margin-top: 40px; }
+  .fields > div { min-height: clamp(420px, 64svh, 620px); }
+  .fields p, .fields .mirror p { grid-column: 1 / span 10; }
+  .fields h3, .fields .mirror h3 { justify-self: start; text-align: left; }
+  .list .grid { margin-top: 56px; }
+  .list .name { display: none; }
+  .rows { grid-column: 1 / -1; }
+  .rows li { grid-template-columns: 1fr auto; row-gap: 2px; }
+  .rows .k { grid-column: 1 / -1; }
+  .list figure { grid-column: 6 / -1; grid-row: 2; margin-top: 56px; }
+  .facts { grid-column: 1 / -1; grid-row: 2; display: flex; flex-wrap: wrap; gap: 8px 20px; margin-top: 28px; }
+  .prose { grid-column: 1 / -1; }
+  .prose .cap { width: 4.2em; height: 4.2em; }
+  .meta { grid-template-columns: 1fr; }
+  .meta p:nth-child(2), .meta p:last-child { text-align: left; }
+}
+@media (max-width: 560px) {
+  .top .wide { display: none; }
+  .sentence { margin-top: 72px; font-size: 16vw; }
+  .hero-foot { flex-direction: column-reverse; align-items: flex-start; }
+  .hero-foot p { font-size: var(--step-body); }
+  .blank { max-width: none; }
+  .blank input { display: block; width: 100%; margin: 0.12em 0; transform: none; }
+  .notes { flex-direction: column; }
+}
+
+/* Motion: everything stays at rest unless it is about to come into view. */
+@media (prefers-reduced-motion: no-preference) {
+  .slot img { animation: settle 30s var(--ease-soft) infinite alternate; }
+  @keyframes settle { from { transform: scale(1.18) translateX(-3%); } to { transform: scale(1.04) translateX(2%); } }
+}
+@media (prefers-reduced-motion: reduce) {
+  .button, .file, .link, .blank button, .rail .done { transition: none; }
+  .stage.on { animation: none; }
+}
+</style>
+</head>
+<body>
+
+<header class="hero edge" id="top">
+  <div class="top">
+    <a class="wordmark" href="#top">pigeonhole</a>
+    <nav aria-label="Sections">
+      <a class="link wide" href="#how">How it works</a>
+      <a class="link" href="#install">Install it</a>
+    </nav>
+  </div>
+  <h1 class="sentence">
+    <span class="line"><span>A</span><span class="slot" role="img" aria-label="a row of pigeonholes"><img src="img/flower-clouds.jpg" width="1686" height="1399" alt="" fetchpriority="high"></span><span>for</span></span>
+    <span class="line">every file.</span>
+  </h1>
+  <div class="hero-foot">
+    <p>It reads what's in each file in your Downloads and Desktop, finds the folder it belongs in, and asks before moving anything.</p>
+    <a class="button" href="#install">Install it</a>
+  </div>
+</header>
+
+<main>
+  <figure class="window" id="window">
+    <div class="frame">
+      <img src="img/flower-clouds.jpg" width="1686" height="1399" loading="lazy" alt="Odilon Redon's Flower Clouds: a sailing boat on still water under clouds that bloom into orange, red and blue like flowers, with paper pigeons flying across.">
+      <canvas id="flock" aria-hidden="true"></canvas>
+    </div>
+    <figcaption class="credit edge"><em>Flower Clouds</em>, Odilon Redon, about 1903, with paper pigeons flying home.</figcaption>
+  </figure>
+
+  <section class="showcase split" id="demo" aria-labelledby="demo-a">
+    <div class="field in">
+      <div class="in-body">
+        <p class="lead-in">The twelve files from pigeonhole's own test run. Pick one to see where it goes.</p>
+        <ul class="files" id="files">
+          <li><button class="file" type="button" aria-pressed="false" data-to="Documents/Contracts" data-why="To Documents/Contracts: content score 0.64.">Brightline_offer_letter_signed.docx</button></li>
+          <li><button class="file" type="button" aria-pressed="false" data-to="Documents/Finance" data-why="To Documents/Finance: content score 0.65.">Invoice-2026-0412.pdf</button></li>
+          <li><button class="file" type="button" aria-pressed="false" data-to="Pictures/Photos" data-why="To Pictures/Photos: picture score 0.86.">Big Sur Coastline.heic</button></li>
+          <li><button class="file" type="button" aria-pressed="false" data-to="Downloads/Installers" data-why="To Downloads/Installers, by the installers rule.">LM-Studio-0.4.26-arm64.dmg</button></li>
+          <li><button class="file" type="button" aria-pressed="false" data-to="Documents/Learning" data-why="To Documents/Learning: content score 0.61.">lecture-07-notes.md</button></li>
+          <li><button class="file" type="button" aria-pressed="false" data-why="Stays. Its best guess is Photos, but only 0.41, under the 0.50 bar.">IMG_4021.heic</button></li>
+          <li><button class="file" type="button" aria-pressed="false" data-to="Pictures/Screenshots" data-why="To Pictures/Screenshots, by the screenshots rule.">Screenshot 2026-10-18 at 12.01.44.png</button></li>
+          <li><button class="file" type="button" aria-pressed="false" data-to="Documents/Work" data-why="To Documents/Work: content score 0.75.">standup notes.txt</button></li>
+          <li><button class="file" type="button" aria-pressed="false" data-to="Pictures/Design" data-why="To Pictures/Design: picture score 0.92.">The Beach.heic</button></li>
+          <li><button class="file" type="button" aria-pressed="false" data-to="Documents/Personal" data-why="To Documents/Personal: content score 0.59.">booking-confirmation.html</button></li>
+          <li><button class="file" type="button" aria-pressed="false" data-why="Stays. No folder scores above 0.35.">Radial Blue.heic</button></li>
+          <li><button class="file" type="button" aria-pressed="false" data-to="Pictures/Photos" data-why="To Pictures/Photos: picture score 0.82.">IMG_4107.heic</button></li>
+        </ul>
+        <p class="file-why" id="why" aria-live="polite"></p>
+        <div class="controls">
+          <button class="button" type="button" id="move">Move them</button>
+          <button class="textbutton link" type="button" id="back" disabled>Put them back</button>
+        </div>
+      </div>
+      <h2 class="split-head" id="demo-a">Downloads,</h2>
+    </div>
+    <div class="field out">
+      <div class="out-body">
+        <div class="plan" data-ui id="plan">
+          <div class="group"><h4>Documents/Contracts</h4><ul><li class="row" data-file="Brightline_offer_letter_signed.docx"><span>Brightline_offer_letter_signed.docx</span><span>content 0.64</span></li></ul></div>
+          <div class="group"><h4>Documents/Finance</h4><ul><li class="row" data-file="Invoice-2026-0412.pdf"><span>Invoice-2026-0412.pdf</span><span>content 0.65</span></li></ul></div>
+          <div class="group"><h4>Documents/Learning</h4><ul><li class="row" data-file="lecture-07-notes.md"><span>lecture-07-notes.md</span><span>content 0.61</span></li></ul></div>
+          <div class="group"><h4>Documents/Personal</h4><ul><li class="row" data-file="booking-confirmation.html"><span>booking-confirmation.html</span><span>content 0.59</span></li></ul></div>
+          <div class="group"><h4>Documents/Work</h4><ul><li class="row" data-file="standup notes.txt"><span>standup notes.txt</span><span>content 0.75</span></li></ul></div>
+          <div class="group"><h4>Downloads/Installers</h4><ul><li class="row" data-file="LM-Studio-0.4.26-arm64.dmg"><span>LM-Studio-0.4.26-arm64.dmg</span><span>rule</span></li></ul></div>
+          <div class="group"><h4>Pictures/Design</h4><ul><li class="row" data-file="The Beach.heic"><span>The Beach.heic</span><span>picture 0.92</span></li></ul></div>
+          <div class="group"><h4>Pictures/Photos</h4><ul><li class="row" data-file="Big Sur Coastline.heic"><span>Big Sur Coastline.heic</span><span>picture 0.86</span></li><li class="row" data-file="IMG_4107.heic"><span>IMG_4107.heic</span><span>picture 0.82</span></li></ul></div>
+          <div class="group"><h4>Pictures/Screenshots</h4><ul><li class="row" data-file="Screenshot 2026-10-18 at 12.01.44.png"><span>Screenshot 2026-10-18 at 12.01.44.png</span><span>rule</span></li></ul></div>
+          <div class="group"><h4>Left where they are</h4><ul><li class="row" data-file="IMG_4021.heic"><span>IMG_4021.heic</span><span>Photos? 0.41</span></li><li class="row" data-file="Radial Blue.heic"><span>Radial Blue.heic</span><span>0.35</span></li></ul></div>
+          <p class="plan-status" id="plan-status">Nothing has moved yet.</p>
+        </div>
+      </div>
+      <p class="split-head" aria-hidden="true">sorted.</p>
+    </div>
+  </section>
+
+  <section class="fields" aria-label="What it does">
+    <div class="f1 edge"><p>PDFs, Word files, slides and notes are read for what they say, then matched with the folders you described.</p><h3>Reads your documents</h3></div>
+    <div class="f2 edge mirror"><p>A small vision model looks at each photo and moves it only when it is at least half sure. The Big Sur coast went to Photos at 0.86.</p><h3>Sees your pictures</h3></div>
+    <div class="f3 edge"><p>IMG_4021.heic scored 0.41 for Photos, under the bar, so it stayed in Downloads with its best guess shown.</p><h3>Leaves the unsure ones</h3></div>
+    <div class="f4 edge mirror"><p>Installers go to Installers and screenshots to Screenshots without any AI. Add your own rules by file type or name.</p><h3>Rules go first</h3></div>
+  </section>
+
+  <section class="how split" id="how" aria-labelledby="clause">
+    <div class="field left">
+      <div class="clause" aria-live="polite"><h2 id="clause">First, describe your folders.</h2><p id="clause-note">In plain words, in pigeonhole.yaml. A few concrete examples help more than one abstract word.</p></div>
+    </div>
+    <div class="field right">
+      <div class="stagewrap">
+        <pre class="term stage on" data-ui data-stage="0"><code><span class="p"># pigeonhole.yaml</span>
+sources:
+  - Downloads
+  - Desktop
+
+folders:
+  - path: Documents/Contracts
+    description: contracts, offer letters, NDAs,
+      leases and signed documents
+  - path: Documents/Finance
+    description: invoices, receipts, bank
+      statements, tax forms and bills
+  - path: Pictures/Photos
+    description: photos of people, pets,
+      animals, places, nature and trips</code></pre>
+        <pre class="term stage" data-ui data-stage="1"><code><span class="p">$</span> make plan
+Reading 12 files in Downloads, Desktop...
+
+<span class="ok">10 files to move</span>
+Brightline_offer_letter_signed.docx
+  to Documents/Contracts    content 0.64
+Invoice-2026-0412.pdf
+  to Documents/Finance      content 0.65
+LM-Studio-0.4.26-arm64.dmg
+  to Downloads/Installers   rule: installers
+<span class="p">and 7 more</span>
+
+<span class="ok">2 files left where they are</span>
+IMG_4021.heic      best guess Photos  0.41
+
+Nothing has moved yet.</code></pre>
+        <pre class="term stage" data-ui data-stage="2"><code><span class="p">$</span> make apply
+Move these 10 files? [y/N] y
+
+<span class="ok">Moved 10 files.</span> Run undo to put them back.</code></pre>
+        <pre class="term stage" data-ui data-stage="3"><code><span class="p">$</span> make undo
+<span class="ok">Put back 10 of 10 files</span> from the 20261018-202749 apply.
+
+<span class="p">The folders it made are gone again.</span></code></pre>
+      </div>
+    </div>
+    <div class="scrub">
+      <div class="track-holder">
+        <div class="rail"><div class="done" id="done"></div></div>
+        <input type="range" id="stage" min="0" max="3" step="1" value="0" aria-label="Stage" aria-valuetext="Describe">
+      </div>
+      <div class="stops" id="stops">
+        <button class="textbutton" type="button" aria-current="step">Describe</button>
+        <button class="textbutton" type="button">Plan</button>
+        <button class="textbutton" type="button">Apply</button>
+        <button class="textbutton" type="button">Undo</button>
+      </div>
+    </div>
+  </section>
+
+
+  <section class="list edge" id="safety" aria-labelledby="safety-h">
+    <h2 id="safety-h"><span class="indent">Nothing moves</span><br>until you say yes.</h2>
+    <div class="grid">
+      <figure>
+        <img src="img/eye-balloon.jpg" width="1000" height="1320" loading="lazy" alt="Odilon Redon's lithograph of a giant eye rising like a hot-air balloon over a dark field.">
+        <figcaption class="credit"><em>The Eye, Like a Strange Balloon, Mounts Toward Infinity</em>, Odilon Redon, 1882.</figcaption>
+      </figure>
+      <p class="name">Safety</p>
+      <ul class="rows">
+        <li><span class="k">Plan</span><span>reads only</span><span class="v">read-only mount</span></li>
+        <li><span class="k">Apply</span><span>the plan you saw</span><span class="v">once</span></li>
+        <li><span class="k">Undo</span><span>every file back</span><span class="v">one command</span></li>
+        <li><span class="k">Overwrites</span><span>never</span><span class="v">receipt (1).pdf</span></li>
+        <li><span class="k">Hidden files</span><span>left alone</span><span class="v">always</span></li>
+        <li><span class="k">Downloads in progress</span><span>left alone</span><span class="v">under 2 minutes old</span></li>
+        <li><span class="k">Keys, certificates</span><span>left alone</span><span class="v">.pem .key .p12</span></li>
+        <li><span class="k">Code projects, apps</span><span>kept whole</span><span class="v">.git .app</span></li>
+        <li><span class="k">Your files</span><span>stay on your computer</span><span class="v">0 bytes uploaded</span></li>
+        <li><span class="k">Models</span><span>downloaded once</span><span class="v">70 MB + 580 MB</span></li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="cta edge" id="install" aria-label="Install">
+    <div class="say">
+      <form class="blank" id="give">
+        <label for="folder">Give my</label>
+        <input id="folder" name="folder" value="Downloads" autocomplete="off" spellcheck="false">
+        <span class="nowrap">a <button type="submit">home</button>.</span>
+      </form>
+      <p class="after">Type the folder you want sorted. Beside it are the commands to run, with a pigeonhole.yaml that starts from it. You need Docker and make.</p>
+    </div>
+    <pre class="term" data-ui id="commands"><code><span class="p">$</span> git clone https://github.com/&lt;you&gt;/pigeonhole
+<span class="p">$</span> cd pigeonhole &amp;&amp; make init
+
+<span class="p"># in pigeonhole.yaml</span>
+sources:
+  - <span id="src">Downloads</span>
+
+<span class="p">$</span> make plan    <span class="p"># see where everything would go</span>
+<span class="p">$</span> make apply   <span class="p"># move them, after you say yes</span>
+<span class="p">$</span> make undo    <span class="p"># put them back</span></code></pre>
+  </section>
+
+  <section class="about edge" aria-label="About the name">
+    <div class="grid">
+      <ul class="facts">
+        <li>MIT licence</li>
+        <li>Python, in Docker</li>
+        <li>Since 2026</li>
+      </ul>
+      <div class="prose">
+        <p><img class="cap" src="img/dovecote.jpg" width="1400" height="971" loading="lazy" alt="Claes Jansz. Visscher's etching of a Dutch farmhouse with a dovecote under its roof."><strong>pigeonhole</strong> takes its name from the dovecote. Before the word meant a slot in a writing desk or a post office sorting frame, a pigeonhole was a nesting hole, one for every bird, and each bird flew home to its own. This one is for files. It is free and open source under the MIT licence, written in Python, runs in Docker, and was made in 2026 by Seymur Mammadov.</p>
+        <p>The paintings and prints on this page are public domain, from the Art Institute of Chicago. The drop capital is <em>Farmhouse with Dovecotes</em> by Claes Jansz. Visscher, 1620.</p>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="edge">
+  <div class="notes">
+    <div><span>pigeonhole sorts files on your own computer.</span><span>Free and open source, MIT licence.</span></div>
+    <a class="link" href="#top">Back to top</a>
+  </div>
+  <a class="start" href="#install">make plan</a>
+  <div class="meta">
+    <p>Made by Seymur Mammadov</p>
+    <p>Pictures: <a class="link" href="https://www.artic.edu/artworks/76395">Redon, Flower Clouds</a>, <a class="link" href="https://www.artic.edu/artworks/79332">Redon, The Eye</a>, <a class="link" href="https://www.artic.edu/artworks/268432">Visscher, Farmhouse with Dovecotes</a>. Art Institute of Chicago, CC0.</p>
+    <p>2026</p>
+  </div>
+</footer>
+
+<script>
+(() => {
+  const still = matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  /* Showcase: pick a file to see where it goes; move them across the edge, and back. */
+  const files = [...document.querySelectorAll(".file")];
+  const rows = new Map([...document.querySelectorAll(".plan .row")].map((r) => [r.dataset.file, r]));
+  const why = document.getElementById("why");
+  const planStatus = document.getElementById("plan-status");
+  const move = document.getElementById("move"), back = document.getElementById("back");
+  let moved = false;
+
+  files.forEach((f) => f.addEventListener("click", () => {
+    const on = f.getAttribute("aria-pressed") !== "true";
+    files.forEach((g) => g.setAttribute("aria-pressed", "false"));
+    rows.forEach((r) => r.classList.remove("lit"));
+    if (on) {
+      f.setAttribute("aria-pressed", "true");
+      rows.get(f.textContent)?.classList.add("lit");
+      why.textContent = f.dataset.why;
+    } else why.textContent = "";
+  }));
+
+  function flyAcross(from, to, i, reverse) {
+    if (still) return Promise.resolve();
+    const a = from.getBoundingClientRect(), b = to.getBoundingClientRect();
+    const ghost = document.createElement("span");
+    ghost.textContent = from.textContent.trim();
+    const css = getComputedStyle(document.documentElement);
+    Object.assign(ghost.style, {
+      position: "fixed", left: a.left + "px", top: a.top + "px", zIndex: 50, pointerEvents: "none",
+      font: getComputedStyle(from).font, color: css.getPropertyValue("--accent-ink"), background: css.getPropertyValue("--ink"),
+      padding: "2px 8px", whiteSpace: "nowrap",
+    });
+    document.body.append(ghost);
+    const dx = b.left - a.left, dy = b.top - a.top;
+    return ghost.animate([
+      { transform: "translate(0, 0) rotate(0deg)" },
+      { transform: `translate(${dx * 0.5}px, ${dy * 0.5 - 90}px) rotate(${reverse ? 4 : -4}deg)`, offset: 0.5 },
+      { transform: `translate(${dx}px, ${dy}px) rotate(0deg)` },
+    ], { duration: 900, delay: i * 70, easing: "cubic-bezier(0.76, 0, 0.24, 1)", fill: "both" }).finished.then(() => ghost.remove());
+  }
+
+  move.addEventListener("click", async () => {
+    if (moved) return;
+    moved = true; move.disabled = true;
+    const goers = files.filter((f) => f.dataset.to);
+    await Promise.all(goers.map((f, i) => {
+      const run = flyAcross(f, rows.get(f.textContent), i, false);
+      setTimeout(() => f.classList.add("gone"), still ? 0 : i * 70 + 60);
+      return run;
+    }));
+    goers.forEach((f) => rows.get(f.textContent).querySelector("span").classList.add("moved"));
+    planStatus.textContent = "Moved 10 files. Run undo to put them back.";
+    why.textContent = "Two files stayed: pigeonhole wasn't sure enough about them.";
+    back.disabled = false; back.focus();
+  });
+  back.addEventListener("click", async () => {
+    if (!moved) return;
+    back.disabled = true;
+    const goers = files.filter((f) => f.dataset.to);
+    await Promise.all(goers.map((f, i) => flyAcross(rows.get(f.textContent).querySelector("span"), f, i, true).then(() => f.classList.remove("gone"))));
+    goers.forEach((f) => rows.get(f.textContent).querySelector("span").classList.remove("moved"));
+    planStatus.textContent = "Put back 10 of 10 files. Nothing has moved.";
+    why.textContent = "";
+    moved = false; move.disabled = false; move.focus();
+  });
+
+  /* How it works: one slider drives the clause and the fragment. */
+  const stages = [
+    ["First, describe your folders.", "In plain words, in pigeonhole.yaml. A few concrete examples help more than one abstract word."],
+    ["Then it plans every move.", "make plan reads each file and shows where it would go and why. It changes nothing."],
+    ["Then you say yes.", "make apply carries out exactly that plan, once, after you answer y."],
+    ["Last, undo if you like.", "make undo puts every file back and removes the folders it made."],
+  ];
+  const names = ["Describe", "Plan", "Apply", "Undo"];
+  const range = document.getElementById("stage"), clause = document.getElementById("clause");
+  const done = document.getElementById("done"), stopButtons = [...document.querySelectorAll("#stops button")];
+  const panes = [...document.querySelectorAll(".stage")];
+  function show(i) {
+    range.value = i; range.setAttribute("aria-valuetext", names[i]);
+    clause.textContent = stages[i][0];
+    document.getElementById("clause-note").textContent = stages[i][1];
+    panes.forEach((p, j) => p.classList.toggle("on", j === i));
+    stopButtons.forEach((b, j) => { if (j === i) b.setAttribute("aria-current", "step"); else b.removeAttribute("aria-current"); });
+    done.style.transform = `scaleX(${i / 3})`;
+  }
+  range.addEventListener("input", () => show(Number(range.value)));
+  stopButtons.forEach((b, i) => b.addEventListener("click", () => show(i)));
+
+  /* CTA: the folder typed into the sentence goes into the config. */
+  const folder = document.getElementById("folder"), src = document.getElementById("src");
+  const sync = () => { src.textContent = folder.value.trim() || "Downloads"; };
+  folder.addEventListener("input", sync);
+  document.getElementById("give").addEventListener("submit", (e) => {
+    e.preventDefault(); sync();
+    const commands = document.getElementById("commands");
+    commands.scrollIntoView({ behavior: still ? "auto" : "smooth", block: "nearest" });
+    if (!still) commands.animate([{ transform: "translateY(10px)" }, { transform: "none" }], { duration: 400, easing: "cubic-bezier(0.22, 1, 0.36, 1)" });
+  });
+
+  /* Paper pigeons over the full painting, flying home. Paused when off screen. */
+  const canvas = document.getElementById("flock"), ctx = canvas.getContext("2d");
+  let w = 0, h = 0, running = false, last = 0;
+  const home = { x: 0.3, y: 0.32 };
+  const spawn = (anywhere) => {
+    const depth = 0.4 + Math.random() * 0.6;
+    return { x: anywhere ? 0.1 + Math.random() * 0.85 : 1.06 + Math.random() * 0.2, y: anywhere ? 0.12 + Math.random() * 0.6 : 0.15 + Math.random() * 0.55,
+      depth, size: 12 + depth * 22, phase: Math.random() * 6.28, speed: 0.02 + depth * 0.025, wobble: 0.3 + Math.random() * 0.5 };
+  };
+  const birds = Array.from({ length: 8 }, () => spawn(true));
+  function resize() {
+    const r = canvas.getBoundingClientRect(), dpr = Math.min(devicePixelRatio || 1, 2);
+    w = r.width; h = r.height; canvas.width = Math.round(w * dpr); canvas.height = Math.round(h * dpr);
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0); draw(0);
+  }
+  function draw(t) {
+    ctx.clearRect(0, 0, w, h);
+    for (const b of birds) {
+      const flap = Math.sin(t * 6 * (0.8 + b.depth * 0.4) + b.phase), s = b.size;
+      ctx.save(); ctx.translate(b.x * w, b.y * h); ctx.rotate(Math.atan2(home.y - b.y, home.x - b.x) * 0.2); ctx.scale(-1, 1);
+      ctx.globalAlpha = 0.6 + b.depth * 0.4;
+      ctx.fillStyle = "#D8CDB9";
+      ctx.beginPath(); ctx.moveTo(0, 0); ctx.lineTo(s * 0.9, -s * 0.55 * flap); ctx.lineTo(s * 0.35, s * 0.1); ctx.closePath(); ctx.fill();
+      ctx.fillStyle = "#F8F2E6";
+      ctx.beginPath(); ctx.moveTo(-s * 0.7, 0); ctx.lineTo(s * 0.55, -s * 0.05); ctx.lineTo(s * 0.2, s * 0.22); ctx.closePath(); ctx.fill();
+      ctx.beginPath(); ctx.moveTo(0, 0); ctx.lineTo(s * 0.75, -s * 0.75 * flap - s * 0.1); ctx.lineTo(s * 0.45, 0); ctx.closePath(); ctx.fill();
+      ctx.restore();
+    }
+  }
+  function step(now) {
+    if (!running) return;
+    const t = now / 1000, dt = Math.min(0.05, last ? t - last : 0); last = t;
+    birds.forEach((b, i) => {
+      b.x -= b.speed * dt * 5;
+      b.y += Math.sin(t * b.wobble + b.phase) * 0.0008 + (home.y - b.y) * 0.002 * b.depth;
+      if (b.x < -0.1) birds[i] = spawn(false);
+    });
+    draw(t); requestAnimationFrame(step);
+  }
+  new ResizeObserver(resize).observe(canvas);
+  if (!still) new IntersectionObserver(([e]) => { running = e.isIntersecting; if (running) { last = 0; requestAnimationFrame(step); } }).observe(canvas);
+
+  /* Entrances: each section arrives in its own manner, triggered just before it scrolls into view,
+     so nothing ever waits hidden. Already on screen at load: left at rest. */
+  if (still || !("IntersectionObserver" in window)) return;
+  const play = (els, frames, opts, stagger) => els.forEach((el, i) => el.animate(frames, { fill: "backwards", easing: "cubic-bezier(0.22, 1, 0.36, 1)", delay: i * stagger, ...opts }));
+  const rise = [{ transform: "translateY(28px)", opacity: 0.2 }, { transform: "none", opacity: 1 }];
+  const entrances = [
+    ["#window .frame", (el) => {
+      el.animate([{ clipPath: "inset(0 0 100% 0)" }, { clipPath: "inset(0)" }], { duration: 1100, easing: "cubic-bezier(0.76, 0, 0.24, 1)", fill: "backwards" });
+      el.querySelector("img").animate([{ transform: "scale(1.12)" }, { transform: "none" }], { duration: 1500, easing: "cubic-bezier(0.33, 1, 0.68, 1)", fill: "backwards" });
+    }],
+    [".showcase", (el) => play([...el.querySelectorAll(".lead-in, .files li, .controls")], rise, { duration: 700 }, 45)],
+    [".showcase .plan", (el) => play([...el.querySelectorAll(".group, .plan-status")], [{ transform: "translateX(18px)", opacity: 0.2 }, { transform: "none", opacity: 1 }], { duration: 600, delay: 200 }, 60)],
+    [".how", (el) => play([el.querySelector(".clause"), el.querySelector(".stagewrap"), el.querySelector(".scrub")], rise, { duration: 800 }, 90)],
+    [".fields > div", (el) => play([el.querySelector("p"), el.querySelector("h3")], rise, { duration: 900 }, 120)],
+    [".list h2", (el) => play([el], rise, { duration: 900 }, 0)],
+    [".rows li", (el) => play([el], [{ transform: "translateY(14px)", opacity: 0.2 }, { transform: "none", opacity: 1 }], { duration: 600 }, 0)],
+    [".list figure", (el) => el.querySelector("img").animate([{ transform: "scale(1.06)", opacity: 0.3 }, { transform: "none", opacity: 1 }], { duration: 1200, easing: "cubic-bezier(0.33, 1, 0.68, 1)", fill: "backwards" })],
+    [".cta", (el) => play([el.querySelector(".blank"), el.querySelector(".after"), el.querySelector(".term")], rise, { duration: 800 }, 90)],
+    [".about", (el) => { el.querySelector(".cap").animate([{ transform: "scale(1.15)" }, { transform: "none" }], { duration: 1200, easing: "cubic-bezier(0.33, 1, 0.68, 1)", fill: "backwards" }); play([...el.querySelectorAll(".facts li")], rise, { duration: 600 }, 70); }],
+    ["footer .start", (el) => play([el], [{ transform: "translateY(40px)", opacity: 0.2 }, { transform: "none", opacity: 1 }], { duration: 1000 }, 0)],
+  ];
+  const checked = new WeakSet();
+  const io = new IntersectionObserver((entries) => {
+    for (const e of entries) {
+      const first = !checked.has(e.target); checked.add(e.target);
+      const inView = e.boundingClientRect.top < innerHeight && e.boundingClientRect.bottom > 0;
+      if (first && inView) { io.unobserve(e.target); continue; }
+      if (!e.isIntersecting) continue;
+      io.unobserve(e.target); e.target.__enter?.(e.target);
+    }
+  }, { rootMargin: "0px 0px 20% 0px" });
+  for (const [selector, enter] of entrances) document.querySelectorAll(selector).forEach((el) => { el.__enter = enter; io.observe(el); });
+})();
+</script>
+</body>
+</html>
