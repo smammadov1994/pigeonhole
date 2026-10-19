@@ -3,12 +3,12 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>pigeonhole</title>
+<title>PigeonHole</title>
 <link rel="icon" href="img/favicon-32.png" sizes="32x32" type="image/png">
 <link rel="icon" href="img/favicon.png" sizes="64x64" type="image/png">
 <link rel="apple-touch-icon" href="img/apple-touch-icon.png">
 <meta name="claude:viewport-fit-sides" content="cover">
-<meta name="description" content="pigeonhole reads what's in each file in your Downloads and Desktop, finds the folder it belongs in, and asks before moving anything.">
+<meta name="description" content="PigeonHole reads what's in each file in your Downloads and Desktop, finds the folder it belongs in, and asks before moving anything.">
 <style>
 @font-face { font-family: "Erode"; src: url("fonts/erode-400.woff2") format("woff2"); font-weight: 400; font-style: normal; font-display: swap; }
 @font-face { font-family: "Erode"; src: url("fonts/erode-400-italic.woff2") format("woff2"); font-weight: 400; font-style: italic; font-display: swap; }
@@ -147,7 +147,7 @@ em { font-style: italic; }
 .out .split-head { right: max(var(--m), env(safe-area-inset-right, 0px)); }
 .showcase .in, .showcase .out { padding-bottom: 140px; }
 
-/* The plan, as pigeonhole prints it, grouped by folder. Its own interface: monospace and its own rules apply. */
+/* The plan, as PigeonHole prints it, grouped by folder. Its own interface: monospace and its own rules apply. */
 .plan { width: min(100%, 520px); font-size: var(--step-body); line-height: 1.45; color: var(--accent-ink); font-variant-numeric: tabular-nums; display: grid; gap: 14px; }
 .plan h4 { margin: 0 0 2px; font-size: var(--step-small); font-weight: 600; color: var(--on-ink-muted); letter-spacing: 0; }
 .plan ul { list-style: none; margin: 0; padding: 0; }
@@ -319,7 +319,7 @@ footer { background: var(--ink); color: var(--accent-ink); min-height: clamp(560
 
 <header class="hero edge" id="top">
   <div class="top">
-    <a class="wordmark" href="#top">pigeonhole</a>
+    <a class="wordmark" href="#top">PigeonHole</a>
     <nav aria-label="Sections">
       <a class="link wide" href="#how">How it works</a>
       <a class="link wide" href="https://github.com/smammadov1994/pigeonhole">GitHub</a>
@@ -348,7 +348,7 @@ footer { background: var(--ink); color: var(--accent-ink); min-height: clamp(560
   <section class="showcase split" id="demo" aria-labelledby="demo-a">
     <div class="field in">
       <div class="in-body">
-        <p class="lead-in">The twelve files from pigeonhole's own test run. Pick one to see where it goes.</p>
+        <p class="lead-in">The twelve files from PigeonHole's own test run. Pick one to see where it goes.</p>
         <ul class="files" id="files">
           <li><button class="file" type="button" aria-pressed="false" data-to="Documents/Contracts" data-why="To Documents/Contracts: content score 0.64.">Brightline_offer_letter_signed.docx</button></li>
           <li><button class="file" type="button" aria-pressed="false" data-to="Documents/Finance" data-why="To Documents/Finance: content score 0.65.">Invoice-2026-0412.pdf</button></li>
@@ -488,10 +488,10 @@ Move these 10 files? [y/N] y
   <section class="cta edge" id="install" aria-labelledby="install-h">
     <div class="say">
       <h2 class="blank" id="install-h">Give your Downloads a <a class="home" href="https://github.com/smammadov1994/pigeonhole/releases/latest/download/pigeonhole-mac-arm64.dmg">home</a>.</h2>
-      <p class="after">pigeonhole is a free app for your Mac. Install it like any other app; it walks you through the rest.</p>
+      <p class="after">PigeonHole is a free app for your Mac. Install it like any other app; it walks you through the rest.</p>
       <ol class="steps">
-        <li><strong>Download it</strong><span>pigeonhole for Mac, for Apple Silicon. About 190 MB.</span></li>
-        <li><strong>Drag it into Applications</strong><span>Open the file you downloaded and drag pigeonhole onto the Applications folder.</span></li>
+        <li><strong>Download it</strong><span>PigeonHole for Mac, for Apple Silicon. About 190 MB.</span></li>
+        <li><strong>Drag it into Applications</strong><span>Open the file you downloaded and drag PigeonHole onto the Applications folder.</span></li>
         <li><strong>Open it</strong><span>The first time, macOS asks you to confirm: System Settings, Privacy &amp; Security, Open Anyway. This beta isn't signed with an Apple certificate yet.</span></li>
       </ol>
       <div class="get">
@@ -500,7 +500,7 @@ Move these 10 files? [y/N] y
       </div>
     </div>
     <figure class="shot">
-      <img src="img/app-welcome.jpg" width="1240" height="800" loading="lazy" alt="pigeonhole's welcome screen on a Mac: the sentence 'A place for every file' beside Redon's Flower Clouds, with paper pigeons, and a Get started button.">
+      <img src="img/app-welcome.jpg" width="1240" height="800" loading="lazy" alt="PigeonHole's welcome screen on a Mac: the sentence 'A place for every file' beside Redon's Flower Clouds, with paper pigeons, and a Get started button.">
       <figcaption>The first thing you'll see.</figcaption>
     </figure>
   </section>
@@ -513,7 +513,7 @@ Move these 10 files? [y/N] y
         <li>Since 2026</li>
       </ul>
       <div class="prose">
-        <p><img class="cap" src="img/dovecote.jpg" width="1400" height="971" loading="lazy" alt="Claes Jansz. Visscher's etching of a Dutch farmhouse with a dovecote under its roof."><strong>pigeonhole</strong> takes its name from the dovecote. Before the word meant a slot in a writing desk or a post office sorting frame, a pigeonhole was a nesting hole, one for every bird, and each bird flew home to its own. This one is for files. It is a free Mac app, open source under the MIT licence, and was made in 2026 by Seymur Mammadov.</p>
+        <p><img class="cap" src="img/dovecote.jpg" width="1400" height="971" loading="lazy" alt="Claes Jansz. Visscher's etching of a Dutch farmhouse with a dovecote under its roof."><strong>PigeonHole</strong> takes its name from the dovecote. Before the word meant a slot in a writing desk or a post office sorting frame, a PigeonHole was a nesting hole, one for every bird, and each bird flew home to its own. This one is for files. It is a free Mac app, open source under the MIT licence, and was made in 2026 by Seymur Mammadov.</p>
         <p>The paintings and prints on this page are public domain, from the Art Institute of Chicago. The drop capital is <em>Farmhouse with Dovecotes</em> by Claes Jansz. Visscher, 1620.</p>
       </div>
     </div>
@@ -522,10 +522,10 @@ Move these 10 files? [y/N] y
 
 <footer class="edge">
   <div class="notes">
-    <div><span>pigeonhole sorts files on your own computer.</span><span>Free and open source, MIT licence.</span></div>
+    <div><span>PigeonHole sorts files on your own computer.</span><span>Free and open source, MIT licence.</span></div>
     <div><a class="link" href="https://github.com/smammadov1994/pigeonhole">Source on GitHub</a><a class="link" href="#top">Back to top</a></div>
   </div>
-  <a class="start" href="https://github.com/smammadov1994/pigeonhole/releases/latest/download/pigeonhole-mac-arm64.dmg">Get pigeonhole</a>
+  <a class="start" href="https://github.com/smammadov1994/pigeonhole/releases/latest/download/pigeonhole-mac-arm64.dmg">Get PigeonHole</a>
   <div class="meta">
     <p>Made by Seymur Mammadov</p>
     <p>Pictures: <a class="link" href="https://www.artic.edu/artworks/76395">Redon, Flower Clouds</a>, <a class="link" href="https://www.artic.edu/artworks/79332">Redon, The Eye</a>, <a class="link" href="https://www.artic.edu/artworks/268432">Visscher, Farmhouse with Dovecotes</a>. Art Institute of Chicago, CC0.</p>
@@ -587,7 +587,7 @@ Move these 10 files? [y/N] y
     }));
     goers.forEach((f) => rows.get(f.textContent).querySelector("span").classList.add("moved"));
     planStatus.textContent = "Moved 10 files. Run undo to put them back.";
-    why.textContent = "Two files stayed: pigeonhole wasn't sure enough about them.";
+    why.textContent = "Two files stayed: PigeonHole wasn't sure enough about them.";
     back.disabled = false; back.focus();
   });
   back.addEventListener("click", async () => {
