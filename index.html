@@ -390,9 +390,9 @@ footer { background: var(--ink); color: var(--accent-ink); min-height: clamp(560
   </section>
 
   <section class="fields" aria-label="What it does">
-    <div class="f1 edge"><p>PDFs, Word files, slides and notes are read for what they say, then matched with the folders you described.</p><h3>Reads your documents</h3></div>
-    <div class="f2 edge mirror"><p>A small vision model looks at each photo and moves it only when it is at least half sure. The Big Sur coast went to Photos at 0.86.</p><h3>Sees your pictures</h3></div>
-    <div class="f3 edge"><p>IMG_4021.heic scored 0.41 for Photos, under the bar, so it stayed in Downloads with its best guess shown.</p><h3>Leaves the unsure ones</h3></div>
+    <div class="f1 edge"><p>PDFs, Word files, slides and notes are read for what they say by <a class="link" href="https://huggingface.co/BAAI/bge-small-en-v1.5">BGE small</a>, a compact text model, then matched with the folders you described.</p><h3>Reads your documents</h3></div>
+    <div class="f2 edge mirror"><p><a class="link" href="https://huggingface.co/Qdrant/clip-ViT-B-32-vision">CLIP</a>, a small vision model from OpenAI, looks at each photo and moves it only when it is at least half sure. The Big Sur coast went to Photos at 0.86.</p><h3>Sees your pictures</h3></div>
+    <div class="f3 edge"><p>IMG_4021.heic scored 0.41 for Photos, under the bar, so it stayed in Downloads with its best guess shown. A chat model on your own machine can take a second look, if you want one.</p><h3>Leaves the unsure ones</h3></div>
     <div class="f4 edge mirror"><p>Installers go to Installers and screenshots to Screenshots without any AI. Add your own rules by file type or name.</p><h3>Rules go first</h3></div>
   </section>
 
@@ -476,7 +476,9 @@ Move these 10 files? [y/N] y
         <li><span class="k">Keys, certificates</span><span>left alone</span><span class="v">.pem .key .p12</span></li>
         <li><span class="k">Code projects, apps</span><span>kept whole</span><span class="v">.git .app</span></li>
         <li><span class="k">Your files</span><span>stay on your computer</span><span class="v">0 bytes uploaded</span></li>
-        <li><span class="k">Models</span><span>downloaded once</span><span class="v">70 MB + 580 MB</span></li>
+        <li><span class="k">Text model</span><span><a class="link" href="https://huggingface.co/BAAI/bge-small-en-v1.5">BGE small</a>, on your processor</span><span class="v">65 MB, once</span></li>
+        <li><span class="k">Picture model</span><span><a class="link" href="https://huggingface.co/Qdrant/clip-ViT-B-32-vision">CLIP ViT-B/32</a>, on your processor</span><span class="v">580 MB, once</span></li>
+        <li><span class="k">Second opinion</span><span>any chat model, optional</span><span class="v">LM Studio or Ollama</span></li>
       </ul>
     </div>
   </section>
