@@ -226,22 +226,22 @@ em { font-style: italic; }
 .rows .k { color: var(--muted); }
 .rows .v { text-align: right; font-variant-numeric: tabular-nums; }
 
-/* CTA: the sentence with a blank. */
+/* Install: the sentence ends in the download; three steps; the app itself beside it. */
 .cta { padding-block: clamp(64px, 10vh, 120px) clamp(120px, 16vh, 200px); display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); column-gap: var(--gap); align-items: start; }
-.cta .say { grid-column: 1 / span 6; }
-.cta .term { grid-column: 7 / span 6; justify-self: end; }
+.cta .say { grid-column: 1 / span 6; display: grid; gap: 28px; align-content: start; }
 .blank { font-size: var(--step-head); line-height: 1.05; letter-spacing: -0.03em; font-weight: 500; max-width: 11em; }
-.blank input, .blank button {
-  vertical-align: baseline; font: inherit; line-height: 1.1; letter-spacing: inherit; border: 0; border-radius: 0; padding: 0 0.18em;
-}
-.blank input { width: 6.5em; background: var(--surface); color: var(--ink); }
-.blank input::placeholder { color: var(--muted); }
-.blank button { background: var(--accent); color: var(--accent-ink); cursor: pointer; transition: background-color var(--t-hover) ease, transform var(--t-press) var(--ease-out); }
-.blank button:active { transform: scale(0.97); }
-@media (hover: hover) and (pointer: fine) { .blank button:hover { background: var(--accent-strong); } }
-.nowrap { white-space: nowrap; }
-.cta .after { margin-top: 22px; color: var(--ink); max-width: 52ch; }
-.cta .term { margin-top: 0.4rem; width: min(100%, 600px); font-size: 0.875rem; }
+.blank .home { display: inline-block; padding: 0 0.18em; background: var(--accent); color: var(--accent-ink); text-decoration: none; transition: background-color var(--t-hover) ease, transform var(--t-press) var(--ease-out); }
+.blank .home:active { transform: scale(0.97); }
+@media (hover: hover) and (pointer: fine) { .blank .home:hover { background: var(--accent-strong); } }
+.cta .after { max-width: 40ch; font-size: var(--step-lead); line-height: 1.35; }
+.steps { list-style: none; margin: 0; padding: 0; display: grid; gap: 18px; max-width: 46ch; }
+.steps li { display: grid; gap: 2px; }
+.steps strong { font-weight: 600; font-size: var(--step-lead); line-height: 1.3; }
+.steps span { color: var(--muted); }
+.get { display: flex; flex-wrap: wrap; align-items: center; gap: 14px 28px; }
+.get .note { color: var(--muted); max-width: 32ch; font-size: var(--step-small); }
+.cta .shot { grid-column: 8 / span 5; margin: 0; align-self: center; }
+.cta .shot img { width: 100%; height: auto; }
 
 /* About: the name, with the dovecote as a drop capital. */
 .about { padding-block: 140px; }
@@ -262,8 +262,8 @@ footer { background: var(--ink); color: var(--accent-ink); min-height: clamp(560
 .meta p:last-child { text-align: right; }
 
 @media (max-width: 900px) {
-  .cta .say, .cta .term { grid-column: 1 / -1; justify-self: stretch; }
-  .cta .term { margin-top: 40px; }
+  .cta .say, .cta .shot { grid-column: 1 / -1; }
+  .cta .shot { margin-top: 48px; }
   .split { grid-template-columns: minmax(0, 1fr); }
   .field { min-height: 0; }
   .showcase .in, .showcase .out { padding-bottom: 110px; }
@@ -298,7 +298,6 @@ footer { background: var(--ink); color: var(--accent-ink); min-height: clamp(560
   .hero-foot { flex-direction: column-reverse; align-items: flex-start; }
   .hero-foot p { font-size: var(--step-body); }
   .blank { max-width: none; }
-  .blank input { display: block; width: 100%; margin: 0.12em 0; transform: none; }
   .notes { flex-direction: column; }
 }
 
@@ -483,37 +482,35 @@ Move these 10 files? [y/N] y
     </div>
   </section>
 
-  <section class="cta edge" id="install" aria-label="Install">
+  <section class="cta edge" id="install" aria-labelledby="install-h">
     <div class="say">
-      <form class="blank" id="give">
-        <label for="folder">Give my</label>
-        <input id="folder" name="folder" value="Downloads" autocomplete="off" spellcheck="false">
-        <span class="nowrap">a <button type="submit">home</button>.</span>
-      </form>
-      <p class="after">On a Mac, <a class="link" href="https://github.com/smammadov1994/pigeonhole/releases/latest/download/pigeonhole-mac-arm64.dmg">download the app</a> and it walks you through everything. On any system, with Docker: type the folder you want sorted. Beside it are the commands to run, with a pigeonhole.yaml that starts from it. You need Docker and make. Then <code>make ui</code> opens the app. The code and the full guide are <a class="link" href="https://github.com/smammadov1994/pigeonhole">on GitHub</a>.</p>
+      <h2 class="blank" id="install-h">Give your Downloads a <a class="home" href="https://github.com/smammadov1994/pigeonhole/releases/latest/download/pigeonhole-mac-arm64.dmg">home</a>.</h2>
+      <p class="after">pigeonhole is a free app for your Mac. Install it like any other app; it walks you through the rest.</p>
+      <ol class="steps">
+        <li><strong>Download it</strong><span>pigeonhole for Mac, for Apple Silicon. About 190 MB.</span></li>
+        <li><strong>Drag it into Applications</strong><span>Open the file you downloaded and drag pigeonhole onto the Applications folder.</span></li>
+        <li><strong>Open it</strong><span>The first time, macOS asks you to confirm: System Settings, Privacy &amp; Security, Open Anyway. This beta isn't signed with an Apple certificate yet.</span></li>
+      </ol>
+      <div class="get">
+        <a class="button" href="https://github.com/smammadov1994/pigeonhole/releases/latest/download/pigeonhole-mac-arm64.dmg">Download for Mac</a>
+        <p class="note">On Windows or Linux, or happier in a terminal? <a class="link" href="https://github.com/smammadov1994/pigeonhole#run-it-with-docker-any-system">Run it with Docker</a>.</p>
+      </div>
     </div>
-    <pre class="term" data-ui id="commands"><code><span class="p">$</span> git clone https://github.com/smammadov1994/pigeonhole
-<span class="p">$</span> cd pigeonhole &amp;&amp; make init
-
-<span class="p"># in pigeonhole.yaml</span>
-sources:
-  - <span id="src">Downloads</span>
-
-<span class="p">$</span> make ui      <span class="p"># the app, at localhost:8765</span>
-<span class="p">$</span> make plan    <span class="p"># see where everything would go</span>
-<span class="p">$</span> make apply   <span class="p"># move them, after you say yes</span>
-<span class="p">$</span> make undo    <span class="p"># put them back</span></code></pre>
+    <figure class="shot">
+      <img src="img/app-welcome.jpg" width="1240" height="800" loading="lazy" alt="pigeonhole's welcome screen on a Mac: the sentence 'A place for every file' beside Redon's Flower Clouds, with paper pigeons, and a Get started button.">
+      <figcaption>The first thing you'll see.</figcaption>
+    </figure>
   </section>
 
   <section class="about edge" aria-label="About the name">
     <div class="grid">
       <ul class="facts">
         <li>MIT licence</li>
-        <li>Python, in Docker</li>
+        <li>A Mac app, in beta</li>
         <li>Since 2026</li>
       </ul>
       <div class="prose">
-        <p><img class="cap" src="img/dovecote.jpg" width="1400" height="971" loading="lazy" alt="Claes Jansz. Visscher's etching of a Dutch farmhouse with a dovecote under its roof."><strong>pigeonhole</strong> takes its name from the dovecote. Before the word meant a slot in a writing desk or a post office sorting frame, a pigeonhole was a nesting hole, one for every bird, and each bird flew home to its own. This one is for files. It is free and open source under the MIT licence, written in Python, runs in Docker, and was made in 2026 by Seymur Mammadov.</p>
+        <p><img class="cap" src="img/dovecote.jpg" width="1400" height="971" loading="lazy" alt="Claes Jansz. Visscher's etching of a Dutch farmhouse with a dovecote under its roof."><strong>pigeonhole</strong> takes its name from the dovecote. Before the word meant a slot in a writing desk or a post office sorting frame, a pigeonhole was a nesting hole, one for every bird, and each bird flew home to its own. This one is for files. It is a free Mac app, open source under the MIT licence, and was made in 2026 by Seymur Mammadov.</p>
         <p>The paintings and prints on this page are public domain, from the Art Institute of Chicago. The drop capital is <em>Farmhouse with Dovecotes</em> by Claes Jansz. Visscher, 1620.</p>
       </div>
     </div>
@@ -525,7 +522,7 @@ sources:
     <div><span>pigeonhole sorts files on your own computer.</span><span>Free and open source, MIT licence.</span></div>
     <div><a class="link" href="https://github.com/smammadov1994/pigeonhole">Source on GitHub</a><a class="link" href="#top">Back to top</a></div>
   </div>
-  <a class="start" href="#install">make plan</a>
+  <a class="start" href="https://github.com/smammadov1994/pigeonhole/releases/latest/download/pigeonhole-mac-arm64.dmg">Get pigeonhole</a>
   <div class="meta">
     <p>Made by Seymur Mammadov</p>
     <p>Pictures: <a class="link" href="https://www.artic.edu/artworks/76395">Redon, Flower Clouds</a>, <a class="link" href="https://www.artic.edu/artworks/79332">Redon, The Eye</a>, <a class="link" href="https://www.artic.edu/artworks/268432">Visscher, Farmhouse with Dovecotes</a>. Art Institute of Chicago, CC0.</p>
@@ -623,17 +620,6 @@ sources:
   range.addEventListener("input", () => show(Number(range.value)));
   stopButtons.forEach((b, i) => b.addEventListener("click", () => show(i)));
 
-  /* CTA: the folder typed into the sentence goes into the config. */
-  const folder = document.getElementById("folder"), src = document.getElementById("src");
-  const sync = () => { src.textContent = folder.value.trim() || "Downloads"; };
-  folder.addEventListener("input", sync);
-  document.getElementById("give").addEventListener("submit", (e) => {
-    e.preventDefault(); sync();
-    const commands = document.getElementById("commands");
-    commands.scrollIntoView({ behavior: still ? "auto" : "smooth", block: "nearest" });
-    if (!still) commands.animate([{ transform: "translateY(10px)" }, { transform: "none" }], { duration: 400, easing: "cubic-bezier(0.22, 1, 0.36, 1)" });
-  });
-
   /* Paper pigeons over the full painting, flying home. Paused when off screen. */
   const canvas = document.getElementById("flock"), ctx = canvas.getContext("2d");
   let w = 0, h = 0, running = false, last = 0;
@@ -693,7 +679,7 @@ sources:
     [".list h2", (el) => play([el], rise, { duration: 900 }, 0)],
     [".rows li", (el) => play([el], [{ transform: "translateY(14px)", opacity: 0.2 }, { transform: "none", opacity: 1 }], { duration: 600 }, 0)],
     [".list figure", (el) => el.querySelector("img").animate([{ transform: "scale(1.06)", opacity: 0.3 }, { transform: "none", opacity: 1 }], { duration: 1200, easing: "cubic-bezier(0.33, 1, 0.68, 1)", fill: "backwards" })],
-    [".cta", (el) => play([el.querySelector(".blank"), el.querySelector(".after"), el.querySelector(".term")], rise, { duration: 800 }, 90)],
+    [".cta", (el) => play([...el.querySelectorAll(".blank, .after, .steps li, .get, .shot")], rise, { duration: 800 }, 80)],
     [".about", (el) => { el.querySelector(".cap").animate([{ transform: "scale(1.15)" }, { transform: "none" }], { duration: 1200, easing: "cubic-bezier(0.33, 1, 0.68, 1)", fill: "backwards" }); play([...el.querySelectorAll(".facts li")], rise, { duration: 600 }, 70); }],
     ["footer .start", (el) => play([el], [{ transform: "translateY(40px)", opacity: 0.2 }, { transform: "none", opacity: 1 }], { duration: 1000 }, 0)],
   ];
