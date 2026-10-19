@@ -255,6 +255,7 @@ em { font-style: italic; }
 footer { background: var(--ink); color: var(--accent-ink); min-height: clamp(560px, 86svh, 860px); display: flex; flex-direction: column; padding-block: 40px 28px; }
 .notes { display: flex; justify-content: space-between; gap: 24px; font-size: var(--step-small); }
 .notes div { display: grid; gap: 4px; max-width: 46ch; }
+.notes div:last-child { justify-items: end; }
 .start { margin-top: auto; font-size: var(--step-display); line-height: 0.9; letter-spacing: -0.045em; font-weight: 500; text-decoration: none; display: inline-block; }
 .meta { margin-top: 36px; display: grid; grid-template-columns: 1fr 2fr 1fr; gap: 16px; font-size: var(--step-small); }
 .meta p:nth-child(2) { text-align: center; }
@@ -319,6 +320,7 @@ footer { background: var(--ink); color: var(--accent-ink); min-height: clamp(560
     <a class="wordmark" href="#top">pigeonhole</a>
     <nav aria-label="Sections">
       <a class="link wide" href="#how">How it works</a>
+      <a class="link wide" href="https://github.com/smammadov1994/pigeonhole">GitHub</a>
       <a class="link" href="#install">Install it</a>
     </nav>
   </div>
@@ -486,7 +488,7 @@ Move these 10 files? [y/N] y
         <input id="folder" name="folder" value="Downloads" autocomplete="off" spellcheck="false">
         <span class="nowrap">a <button type="submit">home</button>.</span>
       </form>
-      <p class="after">Type the folder you want sorted. Beside it are the commands to run, with a pigeonhole.yaml that starts from it. You need Docker and make.</p>
+      <p class="after">Type the folder you want sorted. Beside it are the commands to run, with a pigeonhole.yaml that starts from it. You need Docker and make. Then <code>make ui</code> opens the app. The code and the full guide are <a class="link" href="https://github.com/smammadov1994/pigeonhole">on GitHub</a>.</p>
     </div>
     <pre class="term" data-ui id="commands"><code><span class="p">$</span> git clone https://github.com/smammadov1994/pigeonhole
 <span class="p">$</span> cd pigeonhole &amp;&amp; make init
@@ -495,6 +497,7 @@ Move these 10 files? [y/N] y
 sources:
   - <span id="src">Downloads</span>
 
+<span class="p">$</span> make ui      <span class="p"># the app, at localhost:8765</span>
 <span class="p">$</span> make plan    <span class="p"># see where everything would go</span>
 <span class="p">$</span> make apply   <span class="p"># move them, after you say yes</span>
 <span class="p">$</span> make undo    <span class="p"># put them back</span></code></pre>
@@ -518,7 +521,7 @@ sources:
 <footer class="edge">
   <div class="notes">
     <div><span>pigeonhole sorts files on your own computer.</span><span>Free and open source, MIT licence.</span></div>
-    <a class="link" href="#top">Back to top</a>
+    <div><a class="link" href="https://github.com/smammadov1994/pigeonhole">Source on GitHub</a><a class="link" href="#top">Back to top</a></div>
   </div>
   <a class="start" href="#install">make plan</a>
   <div class="meta">
