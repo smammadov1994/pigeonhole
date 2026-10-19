@@ -8,7 +8,7 @@
 <link rel="icon" href="img/favicon.png" sizes="64x64" type="image/png">
 <link rel="apple-touch-icon" href="img/apple-touch-icon.png">
 <meta name="claude:viewport-fit-sides" content="cover">
-<meta name="description" content="PigeonHole reads what's in each file in your Downloads and Desktop, finds the folder it belongs in, and asks before moving anything.">
+<meta name="description" content="PigeonHole reads what's in each file in your Downloads and Desktop, finds the folder it belongs in, and asks before moving anything. Search documents, pictures, recordings and videos in plain words, all on your Mac.">
 <style>
 @font-face { font-family: "Erode"; src: url("fonts/erode-400.woff2") format("woff2"); font-weight: 400; font-style: normal; font-display: swap; }
 @font-face { font-family: "Erode"; src: url("fonts/erode-400-italic.woff2") format("woff2"); font-weight: 400; font-style: italic; font-display: swap; }
@@ -209,6 +209,7 @@ em { font-style: italic; }
 .fields .f2 { background: var(--bg); }
 .fields .f3 { background: var(--surface); }
 .fields .f4 { background: var(--deep); }
+.fields .f5 { background: var(--ink); color: var(--accent-ink); }
 .fields p { grid-column: 8 / span 5; grid-row: 1; max-width: 30ch; font-size: var(--step-lead); line-height: 1.3; }
 .fields h3 { grid-column: 1 / -1; grid-row: 2; align-self: end; font-size: var(--step-display); line-height: 0.88; letter-spacing: -0.045em; max-width: 6.4em; }
 .fields .mirror p { grid-column: 2 / span 5; }
@@ -396,6 +397,7 @@ footer { background: var(--ink); color: var(--accent-ink); min-height: clamp(560
     <div class="f2 edge mirror"><p><a class="link" href="https://huggingface.co/Qdrant/clip-ViT-B-32-vision">CLIP</a>, a small vision model from OpenAI, looks at each photo and moves it only when it is at least half sure. The Big Sur coast went to Photos at 0.86.</p><h3>Sees your pictures</h3></div>
     <div class="f3 edge"><p>IMG_4021.heic scored 0.41 for Photos, under the bar, so it stayed in Downloads with its best guess shown. A chat model on your own machine can take a second look, if you want one.</p><h3>Leaves the unsure ones</h3></div>
     <div class="f4 edge mirror"><p>Installers go to Installers and screenshots to Screenshots without any AI. Add your own rules by file type or name.</p><h3>Rules go first</h3></div>
+    <div class="f5 edge"><p>Ask for &ldquo;the lease I signed in March&rdquo;, &ldquo;a photo of the beach&rdquo; or &ldquo;the call about pricing&rdquo;. Documents, pictures, recordings and videos are searched by what they say, show and sound like. <a class="link" href="https://huggingface.co/onnx-community/embeddinggemma-2-ONNX">EmbeddingGemma 2</a> listens to the audio, on your Mac.</p><h3>Finds anything you describe</h3></div>
   </section>
 
   <section class="how split" id="how" aria-labelledby="clause">
@@ -479,7 +481,8 @@ Move these 10 files? [y/N] y
         <li><span class="k">Code projects, apps</span><span>kept whole</span><span class="v">.git .app</span></li>
         <li><span class="k">Your files</span><span>stay on your computer</span><span class="v">0 bytes uploaded</span></li>
         <li><span class="k">Text model</span><span><a class="link" href="https://huggingface.co/BAAI/bge-small-en-v1.5">BGE small</a>, on your processor</span><span class="v">65 MB, once</span></li>
-        <li><span class="k">Picture model</span><span><a class="link" href="https://huggingface.co/Qdrant/clip-ViT-B-32-vision">CLIP ViT-B/32</a>, on your processor</span><span class="v">580 MB, once</span></li>
+        <li><span class="k">Picture model</span><span><a class="link" href="https://huggingface.co/Qdrant/clip-ViT-B-32-vision">CLIP ViT-B/32</a>, for pictures and video frames</span><span class="v">580 MB, once</span></li>
+        <li><span class="k">Sound model</span><span><a class="link" href="https://huggingface.co/onnx-community/embeddinggemma-2-ONNX">EmbeddingGemma 2</a>, for recordings and videos</span><span class="v">690 MB, only if you have them</span></li>
         <li><span class="k">Second opinion</span><span>any chat model, optional</span><span class="v">LM Studio or Ollama</span></li>
       </ul>
     </div>
