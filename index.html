@@ -335,7 +335,7 @@ em { font-style: italic; }
 .p-toast b { padding: 4px 11px; border-radius: 999px; background: rgba(20, 24, 45, 0.07); font-weight: 600; }
 .p-toast.on { opacity: 1; transform: translate(-50%, 0); }
 
-/* ⌥ Space, over another app. */
+/* Control+Space, over another app. */
 .p-app { position: absolute; left: 6%; top: 10%; width: 56%; height: 60%; overflow: hidden; }
 .p-bar { display: flex; align-items: center; gap: 5px; padding: 9px 12px; border-bottom: 1px solid rgba(20, 24, 45, 0.08); color: #777; font-size: 12px; }
 .p-bar i { width: 8px; height: 8px; border-radius: 50%; background: rgba(20, 24, 45, 0.14); }
@@ -737,7 +737,7 @@ footer { background: var(--ink); color: var(--accent-ink); min-height: clamp(560
           <div class="p-qbar"><svg viewBox="0 0 20 20" width="15" height="15"><circle cx="9" cy="9" r="5.5" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="m13.2 13.2 3.3 3.3" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg><span id="p-any-q"></span><i class="p-caret"></i></div>
           <div class="p-qrow" id="p-any-row"><span class="pt">DOCX</span><span><b>Invoice_Kiln_Studio_0193.docx</b><em>Finance · Documents</em></span></div>
         </div>
-        <div class="p-keys"><kbd id="p-opt">⌥</kbd><kbd class="wide" id="p-space">space</kbd><kbd id="p-ret">return</kbd></div>
+        <div class="p-keys"><kbd id="p-ctrl">control</kbd><kbd class="wide" id="p-space">space</kbd><kbd id="p-ret">return</kbd></div>
       </div>
       <div class="ps ps-tidy">
         <div class="gl p-auto">Autopilot<span class="p-switch" id="p-switch"><i></i></span></div>
@@ -779,13 +779,13 @@ footer { background: var(--ink); color: var(--accent-ink); min-height: clamp(560
     </div>
     <ol class="pro-list">
       <li><button class="pro-tab" type="button" aria-pressed="true" data-scene="find"><span class="pro-n">01</span><span class="pro-t">Find anything you describe</span><span class="pro-s">Type what you remember: what a file says, what a picture shows, what someone said in a recording. PigeonHole finds it on your Mac.</span><span class="pro-rail"><i></i></span></button></li>
-      <li><button class="pro-tab" type="button" aria-pressed="false" data-scene="any"><span class="pro-n">02</span><span class="pro-t">Search from any app</span><span class="pro-s">Press ⌥ Space wherever you are, type a few words and press Return. The file opens.</span><span class="pro-rail"><i></i></span></button></li>
+      <li><button class="pro-tab" type="button" aria-pressed="false" data-scene="any"><span class="pro-n">02</span><span class="pro-t">Search from any app</span><span class="pro-s">Press Control + Space wherever you are, type a few words and press Return. The file opens.</span><span class="pro-rail"><i></i></span></button></li>
       <li><button class="pro-tab" type="button" aria-pressed="false" data-scene="tidy"><span class="pro-n">03</span><span class="pro-t">Autopilot</span><span class="pro-s">Files that clearly belong somewhere move by themselves. Anything unsure waits for you, and Undo puts it all back.</span><span class="pro-rail"><i></i></span></button></li>
       <li><button class="pro-tab" type="button" aria-pressed="false" data-scene="shelf"><span class="pro-n">04</span><span class="pro-t">Neat inside every folder</span><span class="pro-s">Finance keeps Invoices, Receipts and Tax apart. Or file by year, by month, A to Z or by kind.</span><span class="pro-rail"><i></i></span></button></li>
       <li><button class="pro-tab" type="button" aria-pressed="false" data-scene="names"><span class="pro-n">05</span><span class="pro-t">Clear names</span><span class="pro-s">scan_0042.pdf becomes Acme invoice – 2026-03-03.pdf, named from what's inside.</span><span class="pro-rail"><i></i></span></button></li>
       <li><button class="pro-tab" type="button" aria-pressed="false" data-scene="watch"><span class="pro-n">06</span><span class="pro-t">Any folder, iCloud too</span><span class="pro-s">Watch iCloud Drive or any folder you like. A file still arriving gets a moment to finish first.</span><span class="pro-rail"><i></i></span></button></li>
     </ol>
-    <p class="sr-only">An animation of six Pro features. Typing &ldquo;the lease I signed in March&rdquo; finds the signed lease, and &ldquo;a painting of a boat at sea&rdquo; finds Redon's Flower Clouds. Over another app, ⌥ Space opens a search; typing &ldquo;invoice from kiln studio&rdquo; finds the invoice and Return opens it. With Autopilot on, files arriving in Downloads go to Contracts, Finance and Photos by themselves, and a photo it isn't sure about waits. A Finance folder sorts its files into Invoices, Receipts, Tax and Bank statements, then by year, then by kind. Scans named scan_0042.pdf and Document (3).pdf get names from their first lines. iCloud Drive joins the watched folders, and a photo arriving there goes to Photos once it has finished arriving.</p>
+    <p class="sr-only">An animation of six Pro features. Typing &ldquo;the lease I signed in March&rdquo; finds the signed lease, and &ldquo;a painting of a boat at sea&rdquo; finds Redon's Flower Clouds. Over another app, Control + Space opens a search; typing &ldquo;invoice from kiln studio&rdquo; finds the invoice and Return opens it. With Autopilot on, files arriving in Downloads go to Contracts, Finance and Photos by themselves, and a photo it isn't sure about waits. A Finance folder sorts its files into Invoices, Receipts, Tax and Bank statements, then by year, then by kind. Scans named scan_0042.pdf and Document (3).pdf get names from their first lines. iCloud Drive joins the watched folders, and a photo arriving there goes to Photos once it has finished arriving.</p>
   </section>
 
   <section class="screens edge" aria-labelledby="screens-h">
@@ -910,7 +910,7 @@ You unticked nothing. Move 10 files.
         <p class="tier-terms">Once, inside the app. Yours to keep, with a year of updates. Try it free for 14 days first.</p>
         <ul>
           <li>Search by what's inside: documents, pictures, recordings</li>
-          <li>⌥ Space search from any app</li>
+          <li>Control + Space search from any app</li>
           <li>Autopilot moves what clearly fits</li>
           <li>Neat inside every folder: by topic, date, A to Z or kind</li>
           <li>Clear names for scans and photos</li>
@@ -1319,7 +1319,7 @@ You unticked nothing. Move 10 files.
         const press = async (key, ms) => { $(key).classList.add("down"); await wait(ms); $(key).classList.remove("down"); };
         [quick, row, opened].forEach((e) => e.classList.remove("on")); q.textContent = "";
         await wait(700); if (!alive(r)) return;
-        $("p-opt").classList.add("down"); await wait(220); await press("p-space", 200); $("p-opt").classList.remove("down");
+        $("p-ctrl").classList.add("down"); await wait(220); await press("p-space", 200); $("p-ctrl").classList.remove("down");
         if (!alive(r)) return;
         quick.classList.add("on"); await wait(380);
         if (!await type(q, "invoice from kiln studio", r)) return;
