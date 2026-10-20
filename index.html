@@ -8,7 +8,7 @@
 <link rel="icon" href="img/favicon.png" sizes="64x64" type="image/png">
 <link rel="apple-touch-icon" href="img/apple-touch-icon.png">
 <meta name="claude:viewport-fit-sides" content="cover">
-<meta name="description" content="PigeonHole reads what's in each file in your Downloads and Desktop, finds the folder it belongs in, and asks before moving anything. Search documents, pictures, recordings and videos in plain words, all on your Mac.">
+<meta name="description" content="PigeonHole reads what's in each file in your Downloads and Desktop, finds the folder it belongs in, and asks before moving anything. Free to use; Pro, $24 once, searches documents, pictures, recordings and videos in plain words, all on your Mac.">
 <style>
 @font-face { font-family: "Erode"; src: url("fonts/erode-400.woff2") format("woff2"); font-weight: 400; font-style: normal; font-display: swap; }
 @font-face { font-family: "Erode"; src: url("fonts/erode-400-italic.woff2") format("woff2"); font-weight: 400; font-style: italic; font-display: swap; }
@@ -230,6 +230,27 @@ em { font-style: italic; }
 .rows .k { color: var(--muted); }
 .rows .v { text-align: right; font-variant-numeric: tabular-nums; }
 
+/* Pricing: three fields side by side, the price large; Pro in the cloud-peach field, like the page's other leads. */
+.pricing { padding-block: clamp(96px, 12vh, 150px) clamp(64px, 10vh, 110px); }
+.pricing h2 { font-size: var(--step-head); line-height: 0.98; max-width: 14em; }
+.pricing h2 .indent { padding-left: 3vw; }
+.tiers { margin-top: 64px; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--gap); }
+.tier { display: grid; grid-template-rows: auto auto auto 1fr auto; gap: 20px; padding: clamp(24px, 3vw, 40px); min-height: 560px; background: var(--surface); }
+.tier.pro { background: var(--ink); color: var(--accent-ink); }
+.tier.team { background: var(--deep); }
+.tier-name { font-size: var(--step-small); color: var(--muted); }
+.tier.pro .tier-name { color: var(--on-ink-muted); }
+.tier-price { font-size: clamp(3.2rem, 2rem + 4.5vw, 6.5rem); line-height: 0.9; letter-spacing: -0.045em; }
+.tier-price small { font-size: var(--step-body); letter-spacing: 0; }
+.tier-terms { font-size: var(--step-body); line-height: 1.4; max-width: 30ch; }
+.tier ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 12px; align-content: start; font-size: var(--step-body); line-height: 1.35; }
+.tier .button { justify-self: start; }
+.tier.pro .button { background: var(--accent-ink); color: var(--ink); }
+.tier.pro .button:not([disabled]):hover { background: var(--bg); }
+.tier-soon { align-self: end; font-size: var(--step-body); color: var(--muted); }
+.tiers-note { margin-top: 24px; font-size: var(--step-small); color: var(--muted); max-width: 60ch; }
+@media (max-width: 900px) { .tiers { grid-template-columns: 1fr; } .tier { min-height: 0; } }
+
 /* Search, in motion: the app's own search box and results, an interface fragment with its own look (data-ui). */
 .ask-demo { padding-block: clamp(96px, 14vh, 160px); display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); column-gap: var(--gap); align-items: center; }
 .ask-say { grid-column: 1 / span 4; display: grid; gap: 24px; }
@@ -450,6 +471,7 @@ footer { background: var(--ink); color: var(--accent-ink); min-height: clamp(560
     <a class="wordmark" href="#top">PigeonHole</a>
     <nav aria-label="Sections">
       <a class="link wide" href="#how">How it works</a>
+      <a class="link wide" href="#pricing">Pricing</a>
       <a class="link" href="https://github.com/smammadov1994/pigeonhole/releases/latest/download/pigeonhole-mac-arm64.dmg">Download</a>
     </nav>
   </div>
@@ -458,7 +480,7 @@ footer { background: var(--ink); color: var(--accent-ink); min-height: clamp(560
     <span class="line">every file.</span>
   </h1>
   <div class="hero-foot">
-    <p>It reads what's in each file in your Downloads and Desktop, finds the folder it belongs in, and asks before moving anything. A Mac app, in early beta.</p>
+    <p>It reads what's in each file in your Downloads and Desktop, finds the folder it belongs in, and asks before moving anything. Free to use; Pro, $24 once, adds search by meaning, Autopilot and more.</p>
     <a class="button" href="https://github.com/smammadov1994/pigeonhole/releases/latest/download/pigeonhole-mac-arm64.dmg">Download for Mac</a>
   </div>
 </header>
@@ -523,13 +545,13 @@ footer { background: var(--ink); color: var(--accent-ink); min-height: clamp(560
     <div class="f2 edge mirror"><p><a class="link" href="https://huggingface.co/Qdrant/clip-ViT-B-32-vision">CLIP</a>, a small vision model from OpenAI, looks at each photo and moves it only when it is at least half sure. The Big Sur coast went to Photos at 0.86.</p><h3>Sees your pictures</h3></div>
     <div class="f3 edge"><p>IMG_4021.heic scored 0.41 for Photos, under the bar, so it stayed in Downloads with its best guess shown. A chat model on your own machine can take a second look, if you want one.</p><h3>Leaves the unsure ones</h3></div>
     <div class="f4 edge mirror"><p>Installers go to Installers and screenshots to Screenshots without any AI. Add your own rules by file type or name.</p><h3>Rules go first</h3></div>
-    <div class="f5 edge"><p>Ask for &ldquo;the lease I signed in March&rdquo;, &ldquo;a photo of the beach&rdquo; or &ldquo;the call about pricing&rdquo;. Documents, pictures, recordings and videos are searched by what they say, show and sound like. <a class="link" href="https://huggingface.co/onnx-community/embeddinggemma-2-ONNX">EmbeddingGemma 2</a> listens to the audio, on your Mac.</p><h3>Finds anything you describe</h3></div>
+    <div class="f5 edge"><p>Ask for &ldquo;the lease I signed in March&rdquo;, &ldquo;a photo of the beach&rdquo; or &ldquo;the call about pricing&rdquo;. Documents, pictures, recordings and videos are searched by what they say, show and sound like. <a class="link" href="https://huggingface.co/onnx-community/embeddinggemma-2-ONNX">EmbeddingGemma 2</a> listens to the audio, on your Mac. Part of Pro.</p><h3>Finds anything you describe</h3></div>
   </section>
 
   <section class="ask-demo edge" id="search" aria-labelledby="search-h">
     <div class="ask-say">
       <h2 id="search-h">Ask for it in your own words.</h2>
-      <p>Type what you remember: what a file says, what a picture shows, what someone said in a recording. PigeonHole finds it on your Mac, and one click opens it.</p>
+      <p>Type what you remember: what a file says, what a picture shows, what someone said in a recording. PigeonHole finds it on your Mac, and one click opens it. With Pro, from any app: press ⌥ Space.</p>
       <p class="sr-only">An animation of PigeonHole's search. Typing &ldquo;the lease I signed in March&rdquo; finds the signed lease; &ldquo;a painting of a boat at sea&rdquo; finds Redon's Flower Clouds; &ldquo;voicemail from my landlord about rent&rdquo; finds the recording, heard at 0:42; &ldquo;the offsite in Lisbon&rdquo; finds the video, said at 3:10.</p>
     </div>
     <div class="mock" data-ui aria-hidden="true">
@@ -559,47 +581,44 @@ footer { background: var(--ink); color: var(--accent-ink); min-height: clamp(560
 
   <section class="how split" id="how" aria-labelledby="clause">
     <div class="field left">
-      <div class="clause" aria-live="polite"><h2 id="clause">First, describe your folders.</h2><p id="clause-note">In plain words, in pigeonhole.yaml. A few concrete examples help more than one abstract word.</p></div>
+      <div class="clause" aria-live="polite"><h2 id="clause">First, describe your folders.</h2><p id="clause-note">In plain words, when you set it up. A few concrete examples help more than one abstract word.</p></div>
     </div>
     <div class="field right">
       <div class="stagewrap">
-        <pre class="term stage on" data-ui data-stage="0"><code><span class="p"># pigeonhole.yaml</span>
-sources:
-  - Downloads
-  - Desktop
+        <pre class="term stage on" data-ui data-stage="0"><code><span class="p">Your folders</span>
 
-folders:
-  - path: Documents/Contracts
-    description: contracts, offer letters, NDAs,
-      leases and signed documents
-  - path: Documents/Finance
-    description: invoices, receipts, bank
-      statements, tax forms and bills
-  - path: Pictures/Photos
-    description: photos of people, pets,
-      animals, places, nature and trips</code></pre>
-        <pre class="term stage" data-ui data-stage="1"><code><span class="p">$</span> make plan
-Reading 12 files in Downloads, Desktop...
+Documents/Contracts
+  contracts, offer letters, NDAs,
+  leases and signed documents
+Documents/Finance
+  invoices, receipts, bank
+  statements, tax forms and bills
+Pictures/Photos
+  photos of people, pets,
+  animals, places, nature and trips</code></pre>
+        <pre class="term stage" data-ui data-stage="1"><code><span class="p">Checked 12 files in Downloads and Desktop</span>
 
-<span class="ok">10 files to move</span>
+<span class="ok">10 ready to move</span>
 Brightline_offer_letter_signed.docx
-  to Documents/Contracts    content 0.64
+  to Contracts       by what it says
 Invoice-2026-0412.pdf
-  to Documents/Finance      content 0.65
+  to Finance         by what it says
 LM-Studio-0.4.26-arm64.dmg
-  to Downloads/Installers   rule: installers
+  to Installers      by your rule
 <span class="p">and 7 more</span>
 
-<span class="ok">2 files left where they are</span>
-IMG_4021.heic      best guess Photos  0.41
+<span class="ok">2 need you</span>
+IMG_4021.heic      best guess Photos
 
 Nothing has moved yet.</code></pre>
-        <pre class="term stage" data-ui data-stage="2"><code><span class="p">$</span> make apply
-Move these 10 files? [y/N] y
+        <pre class="term stage" data-ui data-stage="2"><code><span class="p">10 files ready to move</span>
 
-<span class="ok">Moved 10 files.</span> Run undo to put them back.</code></pre>
-        <pre class="term stage" data-ui data-stage="3"><code><span class="p">$</span> make undo
-<span class="ok">Put back 10 of 10 files</span> from the 20261018-202749 apply.
+You unticked nothing. Move 10 files.
+
+<span class="ok">Moved 10 files.</span>  Undo</code></pre>
+        <pre class="term stage" data-ui data-stage="3"><code><span class="p">History</span>
+
+<span class="ok">Put back 10 of 10 files.</span>
 
 <span class="p">The folders it made are gone again.</span></code></pre>
       </div>
@@ -611,8 +630,8 @@ Move these 10 files? [y/N] y
       </div>
       <div class="stops" id="stops">
         <button class="textbutton" type="button" aria-current="step">Describe</button>
-        <button class="textbutton" type="button">Plan</button>
-        <button class="textbutton" type="button">Apply</button>
+        <button class="textbutton" type="button">Check</button>
+        <button class="textbutton" type="button">Move</button>
         <button class="textbutton" type="button">Undo</button>
       </div>
     </div>
@@ -628,21 +647,68 @@ Move these 10 files? [y/N] y
       </figure>
       <p class="name">Safety</p>
       <ul class="rows">
-        <li><span class="k">Plan</span><span>reads only</span><span class="v">read-only mount</span></li>
-        <li><span class="k">Apply</span><span>the plan you saw</span><span class="v">once</span></li>
-        <li><span class="k">Undo</span><span>every file back</span><span class="v">one command</span></li>
+        <li><span class="k">Checking</span><span>reads only</span><span class="v">nothing moves</span></li>
+        <li><span class="k">Moving</span><span>only what you ticked</span><span class="v">once</span></li>
+        <li><span class="k">Undo</span><span>every file back, names too</span><span class="v">one click</span></li>
+        <li><span class="k">Autopilot</span><span>off until you switch it on</span><span class="v">Pro, undoable</span></li>
         <li><span class="k">Overwrites</span><span>never</span><span class="v">receipt (1).pdf</span></li>
         <li><span class="k">Hidden files</span><span>left alone</span><span class="v">always</span></li>
         <li><span class="k">Downloads in progress</span><span>left alone</span><span class="v">under 2 minutes old</span></li>
         <li><span class="k">Keys, certificates</span><span>left alone</span><span class="v">.pem .key .p12</span></li>
         <li><span class="k">Code projects, apps</span><span>kept whole</span><span class="v">.git .app</span></li>
         <li><span class="k">Your files</span><span>stay on your computer</span><span class="v">0 bytes uploaded</span></li>
+        <li><span class="k">Licence check</span><span>your key, about weekly</span><span class="v">nothing else sent</span></li>
         <li><span class="k">Text model</span><span><a class="link" href="https://huggingface.co/BAAI/bge-small-en-v1.5">BGE small</a>, on your processor</span><span class="v">65 MB, once</span></li>
         <li><span class="k">Picture model</span><span><a class="link" href="https://huggingface.co/Qdrant/clip-ViT-B-32-vision">CLIP ViT-B/32</a>, for pictures and video frames</span><span class="v">580 MB, once</span></li>
         <li><span class="k">Sound model</span><span><a class="link" href="https://huggingface.co/onnx-community/embeddinggemma-2-ONNX">EmbeddingGemma 2</a>, for recordings and videos</span><span class="v">690 MB, only if you have them</span></li>
         <li><span class="k">Second opinion</span><span>any chat model, optional</span><span class="v">LM Studio or Ollama</span></li>
       </ul>
     </div>
+  </section>
+
+  <section class="pricing edge" id="pricing" aria-labelledby="pricing-h">
+    <h2 id="pricing-h">Free to sort.<br><span class="indent">Pro for the rest, once.</span></h2>
+    <div class="tiers">
+      <div class="tier">
+        <p class="tier-name">Free</p>
+        <p class="tier-price">$0</p>
+        <p class="tier-terms">For as long as you like.</p>
+        <ul>
+          <li>Sorts your Downloads and Desktop</li>
+          <li>Shows every move and asks first</li>
+          <li>Undo, every time</li>
+          <li>Finds files by name</li>
+        </ul>
+        <a class="button" href="https://github.com/smammadov1994/pigeonhole/releases/latest/download/pigeonhole-mac-arm64.dmg">Download for Mac</a>
+      </div>
+      <div class="tier pro">
+        <p class="tier-name">Pro</p>
+        <p class="tier-price">$24</p>
+        <p class="tier-terms">Once. Yours to keep, with a year of updates. Try it free for 14 days first.</p>
+        <ul>
+          <li>Search by what's inside: documents, pictures, recordings</li>
+          <li>⌥ Space search from any app</li>
+          <li>Autopilot moves what clearly fits</li>
+          <li>Neat inside every folder: by topic, date, A to Z or kind</li>
+          <li>Clear names for scans and photos</li>
+          <li>Watches any folder, iCloud Drive too</li>
+        </ul>
+        <a class="button" href="https://buy.stripe.com/5kQ00j2hD1RSfxTbceenS00">Buy Pro</a>
+      </div>
+      <div class="tier team">
+        <p class="tier-name">Team</p>
+        <p class="tier-price">$20<small> a person</small></p>
+        <p class="tier-terms">Once, for every Mac on your team.</p>
+        <ul>
+          <li>Pro on every Mac, yours to keep</li>
+          <li>A team page to invite everyone</li>
+          <li>Re-key or remove anyone who leaves</li>
+          <li>Optional Cloud Backup: $3 a person a month, 100 GB each</li>
+        </ul>
+        <p class="tier-soon">Coming soon</p>
+      </div>
+    </div>
+    <p class="tiers-note">Buying Pro opens a thank-you page with an Open PigeonHole button, which turns Pro on. Download PigeonHole first.</p>
   </section>
 
   <section class="cta edge" id="install" aria-labelledby="install-h">
@@ -691,7 +757,7 @@ Move these 10 files? [y/N] y
     <div class="grid">
       <ul class="facts">
         <li>Private by design</li>
-        <li>A Mac app, in beta</li>
+        <li>Free, or Pro for $24</li>
         <li>Since 2026</li>
       </ul>
       <div class="prose">
@@ -785,12 +851,12 @@ Move these 10 files? [y/N] y
 
   /* How it works: one slider drives the clause and the fragment. */
   const stages = [
-    ["First, describe your folders.", "In plain words, in pigeonhole.yaml. A few concrete examples help more than one abstract word."],
-    ["Then it plans every move.", "make plan reads each file and shows where it would go and why. It changes nothing."],
-    ["Then you say yes.", "make apply carries out exactly that plan, once, after you answer y."],
-    ["Last, undo if you like.", "make undo puts every file back and removes the folders it made."],
+    ["First, describe your folders.", "In plain words, when you set it up. A few concrete examples help more than one abstract word."],
+    ["Then it checks every file.", "It reads each one and shows where it would go and why. Nothing moves yet."],
+    ["Then you say yes.", "Untick anything you'd rather keep and press Move: exactly what you saw, once."],
+    ["Last, undo if you like.", "One click puts every file back and removes the folders it made."],
   ];
-  const names = ["Describe", "Plan", "Apply", "Undo"];
+  const names = ["Describe", "Check", "Move", "Undo"];
   const range = document.getElementById("stage"), clause = document.getElementById("clause");
   const done = document.getElementById("done"), stopButtons = [...document.querySelectorAll("#stops button")];
   const panes = [...document.querySelectorAll(".stage")];
