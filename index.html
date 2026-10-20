@@ -4,6 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>PigeonHole</title>
+<link rel="icon" href="img/favicon.svg" type="image/svg+xml">
 <link rel="icon" href="img/favicon-32.png" sizes="32x32" type="image/png">
 <link rel="icon" href="img/favicon.png" sizes="64x64" type="image/png">
 <link rel="apple-touch-icon" href="img/apple-touch-icon.png">
@@ -112,7 +113,12 @@ em { font-style: italic; }
   -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 60 72'%3E%3Cpath d='M7 72V31a23 23 0 0 1 46 0v41z'/%3E%3C/svg%3E") 0 0 / auto 100% round no-repeat;
   mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 60 72'%3E%3Cpath d='M7 72V31a23 23 0 0 1 46 0v41z'/%3E%3C/svg%3E") 0 0 / auto 100% round no-repeat;
 }
-.slot img { width: 100%; height: 100%; object-fit: cover; object-position: 60% 30%; }
+.slot img { position: absolute; inset: -14%; width: 128%; height: 128%; max-width: none; object-fit: cover; object-position: 60% 30%; }
+/* The dreamscape, flowing: the painting drifts, and soft peach, lilac and sky glows wander across it, as in the app. */
+.slot .glow { position: absolute; width: 38%; aspect-ratio: 1; border-radius: 50%; filter: blur(22px); mix-blend-mode: soft-light; opacity: 0.85; pointer-events: none; }
+.slot .g1 { background: #FFD3B6; left: -8%; top: -60%; }
+.slot .g2 { background: #A98BE6; left: 38%; top: -20%; }
+.slot .g3 { background: #7FC4DA; right: -6%; bottom: -70%; }
 .hero-foot { margin-top: clamp(40px, 7vh, 80px); display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 28px 48px; }
 .hero-foot p { font-size: var(--step-lead); line-height: 1.35; max-width: 44ch; }
 
@@ -208,8 +214,7 @@ em { font-style: italic; }
 .fields .f1 { background: var(--ink); color: var(--accent-ink); }
 .fields .f2 { background: var(--bg); }
 .fields .f3 { background: var(--surface); }
-.fields .f4 { background: var(--deep); }
-.fields .f5 { background: var(--ink); color: var(--accent-ink); }
+.fields .f4 { background: var(--bg); }
 .fields p { grid-column: 8 / span 5; grid-row: 1; max-width: 30ch; font-size: var(--step-lead); line-height: 1.3; }
 .fields h3 { grid-column: 1 / -1; grid-row: 2; align-self: end; font-size: var(--step-display); line-height: 0.88; letter-spacing: -0.045em; max-width: 6.4em; }
 .fields .mirror p { grid-column: 2 / span 5; }
@@ -251,16 +256,8 @@ em { font-style: italic; }
 .tiers-note { margin-top: 24px; font-size: var(--step-small); color: var(--muted); max-width: 60ch; }
 @media (max-width: 900px) { .tiers { grid-template-columns: 1fr; } .tier { min-height: 0; } }
 
-/* Search, in motion: the app's own search box and results, an interface fragment with its own look (data-ui). */
-.ask-demo { padding-block: clamp(96px, 14vh, 160px); display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); column-gap: var(--gap); align-items: center; }
-.ask-say { grid-column: 1 / span 4; display: grid; gap: 24px; }
-.ask-say h2 { font-size: var(--step-head); max-width: 9em; }
-.ask-say p { font-size: var(--step-lead); line-height: 1.35; max-width: 32ch; }
+/* Search, played: the app's own search box and results, the Pro stage's first scene. */
 .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
-.mock { grid-column: 6 / span 7; position: relative; aspect-ratio: 16 / 11; overflow: hidden; border-radius: 22px; isolation: isolate;
-  font: 15px/1.4 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; color: #111; letter-spacing: 0; }
-.mock-sky { position: absolute; inset: -8%; width: 116%; height: 116%; max-width: none; object-fit: cover; z-index: -2; animation: sky 26s ease-in-out infinite alternate; }
-.mock::before { content: ""; position: absolute; inset: 0; z-index: -1; background: rgba(255, 255, 255, 0.58); }
 @keyframes sky { from { transform: scale(1.02) translate(0, 0); } to { transform: scale(1.14) translate(-3%, 2%); } }
 .mock-results { position: absolute; left: 7%; right: 7%; top: 9%; display: grid; gap: 2px; padding: 8px; border-radius: 20px;
   background: rgba(255, 255, 255, 0.4); border: 1px solid rgba(255, 255, 255, 0.6); -webkit-backdrop-filter: blur(22px) saturate(1.7); backdrop-filter: blur(22px) saturate(1.7); /* taste-skill-ignore: the app's own glass, shown as an interface fragment (data-ui) */
@@ -289,7 +286,7 @@ em { font-style: italic; }
 @keyframes bob { 0%, 60%, 100% { transform: translateY(0); opacity: 0.55; } 30% { transform: translateY(-5px); opacity: 1; } }
 .mock-go { grid-column: 3; width: 30px; height: 30px; border-radius: 50%; display: grid; place-items: center; color: #3d3d3d; background: rgba(20, 24, 45, 0.06); border: 1px solid rgba(255, 255, 255, 0.6); } /* taste-skill-ignore: the app's own glass, shown as an interface fragment (data-ui) */
 
-/* Pro, played: five scenes from the app, one at a time, each beside its line. Interface fragments (data-ui). */
+/* Pro, played: six scenes from the app, one at a time, each beside its line. Interface fragments (data-ui). */
 .pro-show { background: var(--deep); padding-block: clamp(96px, 14vh, 160px); display: grid; grid-template-columns: minmax(0, 4fr) minmax(0, 1fr) minmax(0, 7fr);
   grid-template-areas: "head . stage" "list . stage"; column-gap: var(--gap); row-gap: 40px; align-content: center; }
 .pro-head { grid-area: head; align-self: end; display: grid; gap: 20px; }
@@ -313,7 +310,7 @@ em { font-style: italic; }
 .pro-sky { position: absolute; inset: -8%; width: 116%; height: 116%; max-width: none; object-fit: cover; z-index: -2; animation: sky 26s ease-in-out infinite alternate; }
 .pro-stage::before { content: ""; position: absolute; inset: 0; z-index: -1; background: rgba(255, 255, 255, 0.55); }
 .ps { position: absolute; inset: 0; opacity: 0; visibility: hidden; transition: opacity 0.45s var(--ease-out), visibility 0s 0.45s; }
-.pro-stage[data-scene="any"] .ps-any, .pro-stage[data-scene="tidy"] .ps-tidy, .pro-stage[data-scene="shelf"] .ps-shelf,
+.pro-stage[data-scene="find"] .ps-find, .pro-stage[data-scene="any"] .ps-any, .pro-stage[data-scene="tidy"] .ps-tidy, .pro-stage[data-scene="shelf"] .ps-shelf,
 .pro-stage[data-scene="names"] .ps-names, .pro-stage[data-scene="watch"] .ps-watch { opacity: 1; visibility: visible; transition: opacity 0.45s var(--ease-out); }
 .gl { border-radius: 14px; background: rgba(255, 255, 255, 0.5); border: 1px solid rgba(255, 255, 255, 0.65); -webkit-backdrop-filter: blur(18px) saturate(1.6); backdrop-filter: blur(18px) saturate(1.6); /* taste-skill-ignore: the app's own glass, shown as an interface fragment (data-ui) */
   box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.9), 0 14px 34px -18px rgba(20, 24, 45, 0.4); } /* taste-skill-ignore: the app's own glass, shown as an interface fragment (data-ui) */
@@ -556,8 +553,7 @@ footer { background: var(--ink); color: var(--accent-ink); min-height: clamp(560
 .meta p:last-child { text-align: right; }
 
 @media (max-width: 900px) {
-  .ask-say, .mock, .screens .s1, .screens .s2 { grid-column: 1 / -1; }
-  .mock { margin-top: 48px; aspect-ratio: 4 / 5; }
+  .screens .s1, .screens .s2 { grid-column: 1 / -1; }
   .mock-results { left: 5%; right: 5%; }
   .mock-box { left: 5%; right: 5%; }
   .screens .s2 { margin-top: 0; }
@@ -616,13 +612,20 @@ footer { background: var(--ink); color: var(--accent-ink); min-height: clamp(560
 
 /* Motion: everything stays at rest unless it is about to come into view. */
 @media (prefers-reduced-motion: no-preference) {
-  .slot img { animation: settle 30s var(--ease-soft) infinite alternate; }
-  @keyframes settle { from { transform: scale(1.18) translateX(-3%); } to { transform: scale(1.04) translateX(2%); } }
+  .slot img { animation: dream-drift 14s ease-in-out infinite alternate; }
+  .slot .g1 { animation: glow-a 9s ease-in-out infinite alternate; }
+  .slot .g2 { animation: glow-b 12s ease-in-out infinite alternate; }
+  .slot .g3 { animation: glow-c 10s ease-in-out infinite alternate-reverse; }
+  @keyframes dream-drift { 0% { transform: scale(1) translate(0, 0) rotate(0deg); } 33% { transform: scale(1.12) translate(-6%, 4%) rotate(2deg); }
+    66% { transform: scale(1.06) translate(5%, -4%) rotate(-1.5deg); } 100% { transform: scale(1.14) translate(-3%, -6%) rotate(1deg); } }
+  @keyframes glow-a { 0% { transform: translate(0, 0) scale(1); } 50% { transform: translate(90%, 70%) scale(1.3); } 100% { transform: translate(160%, 20%) scale(0.9); } }
+  @keyframes glow-b { 0% { transform: translate(0, 0) scale(1.1); } 50% { transform: translate(-80%, 40%) scale(0.85); } 100% { transform: translate(60%, -10%) scale(1.25); } }
+  @keyframes glow-c { 0% { transform: translate(0, 0) scale(1); } 50% { transform: translate(-120%, -60%) scale(1.2); } 100% { transform: translate(-200%, -20%) scale(0.95); } }
 }
 @media (prefers-reduced-motion: reduce) {
   .button, .file, .link, .blank button, .rail .done { transition: none; }
   .stage.on { animation: none; }
-  .mock-sky, .pro-sky, .p-ring, .p-caret { animation: none; }
+  .pro-sky, .p-ring, .p-caret, .mock-caret, .mock-dots i { animation: none; }
   .pro-rail { visibility: hidden; }
 }
 </style>
@@ -641,7 +644,7 @@ footer { background: var(--ink); color: var(--accent-ink); min-height: clamp(560
     </nav>
   </div>
   <h1 class="sentence">
-    <span class="line"><span>A</span><span class="slot" role="img" aria-label="a row of pigeonholes"><img src="img/flower-clouds.jpg" width="1686" height="1399" alt="" fetchpriority="high"></span><span>for</span></span>
+    <span class="line"><span>A</span><span class="slot" role="img" aria-label="a row of pigeonholes"><img src="img/flower-clouds.jpg" width="1686" height="1399" alt="" fetchpriority="high"><i class="glow g1"></i><i class="glow g2"></i><i class="glow g3"></i></span><span>for</span></span>
     <span class="line">every file.</span>
   </h1>
   <div class="hero-foot">
@@ -710,24 +713,6 @@ footer { background: var(--ink); color: var(--accent-ink); min-height: clamp(560
     <div class="f2 edge mirror"><p><a class="link" href="https://huggingface.co/Qdrant/clip-ViT-B-32-vision">CLIP</a>, a small vision model from OpenAI, looks at each photo and moves it only when it is at least half sure. The Big Sur coast went to Photos at 0.86.</p><h3>Sees your pictures</h3></div>
     <div class="f3 edge"><p>IMG_4021.heic scored 0.41 for Photos, under the bar, so it stayed in Downloads with its best guess shown. A chat model on your own machine can take a second look, if you want one.</p><h3>Leaves the unsure ones</h3></div>
     <div class="f4 edge mirror"><p>Installers go to Installers and screenshots to Screenshots without any AI. Add your own rules by file type or name.</p><h3>Rules go first</h3></div>
-    <div class="f5 edge"><p>Ask for &ldquo;the lease I signed in March&rdquo;, &ldquo;a photo of the beach&rdquo; or &ldquo;the call about pricing&rdquo;. Documents, pictures, recordings and videos are searched by what they say, show and sound like. <a class="link" href="https://huggingface.co/onnx-community/embeddinggemma-2-ONNX">EmbeddingGemma 2</a> listens to the audio, on your Mac. Part of Pro.</p><h3>Finds anything you describe</h3></div>
-  </section>
-
-  <section class="ask-demo edge" id="search" aria-labelledby="search-h">
-    <div class="ask-say">
-      <h2 id="search-h">Ask for it in your own words.</h2>
-      <p>Type what you remember: what a file says, what a picture shows, what someone said in a recording. PigeonHole finds it on your Mac, and one click opens it. With Pro, from any app: press ⌥ Space.</p>
-      <p class="sr-only">An animation of PigeonHole's search. Typing &ldquo;the lease I signed in March&rdquo; finds the signed lease; &ldquo;a painting of a boat at sea&rdquo; finds Redon's Flower Clouds; &ldquo;voicemail from my landlord about rent&rdquo; finds the recording, heard at 0:42; &ldquo;the offsite in Lisbon&rdquo; finds the video, said at 3:10.</p>
-    </div>
-    <div class="mock" data-ui aria-hidden="true">
-      <img class="mock-sky" src="img/flower-clouds.jpg" width="1686" height="1399" loading="lazy" alt="">
-      <div class="mock-results" id="mock-results"></div>
-      <div class="mock-box">
-        <span class="mock-q"><span id="mock-q"></span><span class="mock-caret"></span></span>
-        <span class="mock-dots" id="mock-dots"><i></i><i></i><i></i></span>
-        <span class="mock-go"><svg viewBox="0 0 20 20" width="15" height="15"><path d="M10 15V5m0 0-4.5 4.5M10 5l4.5 4.5" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
-      </div>
-    </div>
   </section>
 
   <section class="pro-show edge" id="pro" aria-labelledby="pro-h">
@@ -735,8 +720,16 @@ footer { background: var(--ink); color: var(--accent-ink); min-height: clamp(560
       <p class="pro-tag">Pro · $24 once · free for 14 days</p>
       <h2 id="pro-h">Pro does the rest.</h2>
     </div>
-    <div class="pro-stage" id="pro-stage" data-scene="any" data-ui aria-hidden="true">
+    <div class="pro-stage" id="pro-stage" data-scene="find" data-ui aria-hidden="true">
       <img class="pro-sky" src="img/flower-clouds.jpg" width="1686" height="1399" loading="lazy" alt="">
+      <div class="ps ps-find">
+        <div class="mock-results" id="mock-results"></div>
+        <div class="mock-box">
+          <span class="mock-q"><span id="mock-q"></span><span class="mock-caret"></span></span>
+          <span class="mock-dots" id="mock-dots"><i></i><i></i><i></i></span>
+          <span class="mock-go"><svg viewBox="0 0 20 20" width="15" height="15"><path d="M10 15V5m0 0-4.5 4.5M10 5l4.5 4.5" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+        </div>
+      </div>
       <div class="ps ps-any">
         <div class="gl p-app"><div class="p-bar"><i></i><i></i><i></i><span>Notes</span></div><div class="p-lines"><i></i><i></i><i></i><i></i><i></i><i></i></div></div>
         <div class="gl p-opened" id="p-opened"><b>Invoice 0193</b><span>Kiln Studio</span><div class="p-lines"><i></i><i></i><i></i></div><em>Total due 432</em></div>
@@ -785,13 +778,14 @@ footer { background: var(--ink); color: var(--accent-ink); min-height: clamp(560
       </div>
     </div>
     <ol class="pro-list">
-      <li><button class="pro-tab" type="button" aria-pressed="true" data-scene="any"><span class="pro-n">01</span><span class="pro-t">Search from any app</span><span class="pro-s">Press ⌥ Space wherever you are, type a few words and press Return. The file opens.</span><span class="pro-rail"><i></i></span></button></li>
-      <li><button class="pro-tab" type="button" aria-pressed="false" data-scene="tidy"><span class="pro-n">02</span><span class="pro-t">Autopilot</span><span class="pro-s">Files that clearly belong somewhere move by themselves. Anything unsure waits for you, and Undo puts it all back.</span><span class="pro-rail"><i></i></span></button></li>
-      <li><button class="pro-tab" type="button" aria-pressed="false" data-scene="shelf"><span class="pro-n">03</span><span class="pro-t">Neat inside every folder</span><span class="pro-s">Finance keeps Invoices, Receipts and Tax apart. Or file by year, by month, A to Z or by kind.</span><span class="pro-rail"><i></i></span></button></li>
-      <li><button class="pro-tab" type="button" aria-pressed="false" data-scene="names"><span class="pro-n">04</span><span class="pro-t">Clear names</span><span class="pro-s">scan_0042.pdf becomes Acme invoice – 2026-03-03.pdf, named from what's inside.</span><span class="pro-rail"><i></i></span></button></li>
-      <li><button class="pro-tab" type="button" aria-pressed="false" data-scene="watch"><span class="pro-n">05</span><span class="pro-t">Any folder, iCloud too</span><span class="pro-s">Watch iCloud Drive or any folder you like. A file still arriving gets a moment to finish first.</span><span class="pro-rail"><i></i></span></button></li>
+      <li><button class="pro-tab" type="button" aria-pressed="true" data-scene="find"><span class="pro-n">01</span><span class="pro-t">Find anything you describe</span><span class="pro-s">Type what you remember: what a file says, what a picture shows, what someone said in a recording. PigeonHole finds it on your Mac.</span><span class="pro-rail"><i></i></span></button></li>
+      <li><button class="pro-tab" type="button" aria-pressed="false" data-scene="any"><span class="pro-n">02</span><span class="pro-t">Search from any app</span><span class="pro-s">Press ⌥ Space wherever you are, type a few words and press Return. The file opens.</span><span class="pro-rail"><i></i></span></button></li>
+      <li><button class="pro-tab" type="button" aria-pressed="false" data-scene="tidy"><span class="pro-n">03</span><span class="pro-t">Autopilot</span><span class="pro-s">Files that clearly belong somewhere move by themselves. Anything unsure waits for you, and Undo puts it all back.</span><span class="pro-rail"><i></i></span></button></li>
+      <li><button class="pro-tab" type="button" aria-pressed="false" data-scene="shelf"><span class="pro-n">04</span><span class="pro-t">Neat inside every folder</span><span class="pro-s">Finance keeps Invoices, Receipts and Tax apart. Or file by year, by month, A to Z or by kind.</span><span class="pro-rail"><i></i></span></button></li>
+      <li><button class="pro-tab" type="button" aria-pressed="false" data-scene="names"><span class="pro-n">05</span><span class="pro-t">Clear names</span><span class="pro-s">scan_0042.pdf becomes Acme invoice – 2026-03-03.pdf, named from what's inside.</span><span class="pro-rail"><i></i></span></button></li>
+      <li><button class="pro-tab" type="button" aria-pressed="false" data-scene="watch"><span class="pro-n">06</span><span class="pro-t">Any folder, iCloud too</span><span class="pro-s">Watch iCloud Drive or any folder you like. A file still arriving gets a moment to finish first.</span><span class="pro-rail"><i></i></span></button></li>
     </ol>
-    <p class="sr-only">An animation of five Pro features. Over another app, ⌥ Space opens a search; typing &ldquo;invoice from kiln studio&rdquo; finds the invoice and Return opens it. With Autopilot on, files arriving in Downloads go to Contracts, Finance and Photos by themselves, and a photo it isn't sure about waits. A Finance folder sorts its files into Invoices, Receipts, Tax and Bank statements, then by year, then by kind. Scans named scan_0042.pdf and Document (3).pdf get names from their first lines. iCloud Drive joins the watched folders, and a photo arriving there goes to Photos once it has finished arriving.</p>
+    <p class="sr-only">An animation of six Pro features. Typing &ldquo;the lease I signed in March&rdquo; finds the signed lease, and &ldquo;a painting of a boat at sea&rdquo; finds Redon's Flower Clouds. Over another app, ⌥ Space opens a search; typing &ldquo;invoice from kiln studio&rdquo; finds the invoice and Return opens it. With Autopilot on, files arriving in Downloads go to Contracts, Finance and Photos by themselves, and a photo it isn't sure about waits. A Finance folder sorts its files into Invoices, Receipts, Tax and Bank statements, then by year, then by kind. Scans named scan_0042.pdf and Document (3).pdf get names from their first lines. iCloud Drive joins the watched folders, and a photo arriving there goes to Photos once it has finished arriving.</p>
   </section>
 
   <section class="screens edge" aria-labelledby="screens-h">
@@ -1178,48 +1172,6 @@ You unticked nothing. Move 10 files.
 })();
 </script>
 <script>
-/* The search demo: types a question, waits a beat with three dots, and the answer rises onto the glass. Then the next. */
-(() => {
-  const still = matchMedia("(prefers-reduced-motion: reduce)").matches;
-  const box = document.querySelector(".mock"); if (!box) return;
-  const q = document.getElementById("mock-q"), dots = document.getElementById("mock-dots"), results = document.getElementById("mock-results");
-  const tile = (kind) => ({ tile: kind });
-  const searches = [
-    { ask: "the lease I signed in March", rows: [{ ...tile("docx"), name: "Lease_Flat_4B_signed.docx", meta: "Contracts · Documents", snip: "This lease agreement is made on 3 March 2026 between Harbour Lane…" }] },
-    { ask: "a painting of a boat at sea", rows: [{ picture: true, name: "redon-flower-clouds.jpg", meta: "Art · Pictures" }] },
-    { ask: "voicemail from my landlord about rent", rows: [{ ...tile("m4a"), name: "Voicemail, 14 October.m4a", meta: "Recordings · Music · heard at 0:42" }] },
-    { ask: "the offsite in Lisbon", rows: [{ ...tile("mp4"), name: "team-offsite-lisbon.mp4", meta: "Movies · said at 3:10" }, { ...tile("html"), name: "train-tickets-lisbon.html", meta: "Personal · Documents", snip: "Your train tickets from Porto to Lisbon on 22 November…" }] },
-  ];
-  const el = (tag, cls, text) => { const n = document.createElement(tag); if (cls) n.className = cls; if (text) n.textContent = text; return n; };
-  function show(s) {
-    const head = el("div", "mock-head", `${s.rows.length} ${s.rows.length === 1 ? "match" : "matches"}`);
-    results.replaceChildren(head, ...s.rows.map((r, i) => {
-      const thumb = el("div", "mock-thumb", r.tile);
-      if (r.picture) { const img = el("img"); img.src = "img/flower-clouds.jpg"; img.alt = ""; thumb.replaceChildren(img); }
-      const cell = el("div"); cell.append(el("div", "mock-name", r.name), el("div", "mock-meta", r.meta)); if (r.snip) cell.append(el("div", "mock-snip", r.snip));
-      const row = el("div", "mock-row"); row.style.transitionDelay = `${120 + i * 110}ms`; row.append(thumb, cell); return row;
-    }));
-    requestAnimationFrame(() => results.classList.add("on"));
-  }
-  if (still) { q.textContent = searches[0].ask; show(searches[0]); return; }
-  const wait = (ms) => new Promise((r) => setTimeout(r, ms));
-  let visible = false, running = false;
-  async function loop() {
-    if (running) return; running = true;
-    for (let i = 0; visible; i = (i + 1) % searches.length) {
-      const s = searches[i];
-      results.classList.remove("on"); await wait(380);
-      q.textContent = "";
-      for (const ch of s.ask) { q.textContent += ch; await wait(38 + Math.random() * 45); }
-      dots.classList.add("on"); await wait(950); dots.classList.remove("on");
-      show(s); await wait(3200);
-    }
-    running = false;
-  }
-  new IntersectionObserver(([e]) => { visible = e.isIntersecting; if (visible) loop(); }, { threshold: 0.3 }).observe(box);
-})();
-</script>
-<script>
 /* The install steps, played: the download fills, the icon slides into Applications, the app opens and its boats rock.
    The step beside it lights up as it plays. Still under reduced motion: the app, open. */
 (() => {
@@ -1246,7 +1198,7 @@ You unticked nothing. Move 10 files.
 })();
 </script>
 <script>
-/* Pro, played: five scenes from the app. Each plays once beside its line, then the next; pick a line to jump to it.
+/* Pro, played: six scenes from the app. Each plays once beside its line, then the next; pick a line to jump to it.
    Paused off screen. Under reduced motion: every scene at rest, finished, and the lines still switch them. */
 (() => {
   const stage = document.getElementById("pro-stage"); if (!stage) return;
@@ -1322,7 +1274,44 @@ You unticked nothing. Move 10 files.
   }
   regroup(null, false);
 
+  // Find: types a question, waits a beat with three dots, and the answer rises onto the glass. Then the next.
+  const findQ = $("mock-q"), findDots = $("mock-dots"), findResults = $("mock-results");
+  const SEARCHES = [
+    { ask: "the lease I signed in March", rows: [{ tile: "docx", name: "Lease_Flat_4B_signed.docx", meta: "Contracts · Documents", snip: "This lease agreement is made on 3 March 2026 between Harbour Lane…" }] },
+    { ask: "a painting of a boat at sea", rows: [{ picture: true, name: "redon-flower-clouds.jpg", meta: "Art · Pictures" }] },
+  ];
+  const el = (tag, cls, text) => { const n = document.createElement(tag); if (cls) n.className = cls; if (text) n.textContent = text; return n; };
+  function showFind(search) {
+    const head = el("div", "mock-head", `${search.rows.length} ${search.rows.length === 1 ? "match" : "matches"}`);
+    findResults.replaceChildren(head, ...search.rows.map((r, i) => {
+      const thumb = el("div", "mock-thumb", r.tile);
+      if (r.picture) { const img = el("img"); img.src = "img/flower-clouds.jpg"; img.alt = ""; thumb.replaceChildren(img); }
+      const cell = el("div");
+      cell.append(el("div", "mock-name", r.name), el("div", "mock-meta", r.meta));
+      if (r.snip) cell.append(el("div", "mock-snip", r.snip));
+      const row = el("div", "mock-row");
+      row.style.transitionDelay = `${120 + i * 110}ms`;
+      row.append(thumb, cell);
+      return row;
+    }));
+    requestAnimationFrame(() => findResults.classList.add("on"));
+  }
+
   const scenes = {
+    find: {
+      ms: 12000,
+      async play(r) {
+        for (const search of SEARCHES) {
+          if (!alive(r)) return;
+          findResults.classList.remove("on"); await wait(380);
+          if (!await type(findQ, search.ask, r)) return;
+          findDots.classList.add("on"); await wait(900); findDots.classList.remove("on");
+          if (!alive(r)) return;
+          showFind(search); await wait(3000);
+        }
+      },
+      rest() { findQ.textContent = SEARCHES[0].ask; showFind(SEARCHES[0]); },
+    },
     any: {
       ms: 8000,
       async play(r) {
