@@ -122,7 +122,9 @@ em { font-style: italic; }
 .hero-foot { margin-top: clamp(40px, 7vh, 80px); display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 28px 48px; }
 .hero-foot p { font-size: var(--step-lead); line-height: 1.35; max-width: 44ch; }
 .get-mac { display: grid; gap: 10px; justify-items: end; }
-.hero-foot .which-mac { font-size: var(--step-small); color: var(--muted); max-width: none; }
+.hero-foot .which-mac { font-size: var(--step-small); color: var(--muted); max-width: 36ch; text-align: right; line-height: 1.5; }
+.which-mac .textbutton { text-decoration: underline; text-decoration-color: color-mix(in srgb, currentColor 35%, transparent); text-underline-offset: 0.2em; }
+.which-hint { display: block; margin-top: 4px; color: var(--ink); }
 
 /* The same picture, opened to its full width. */
 .window { margin: 0; }
@@ -608,6 +610,7 @@ footer { background: var(--ink); color: var(--accent-ink); min-height: clamp(560
   .sentence { margin-top: 72px; font-size: 16vw; }
   .hero-foot { flex-direction: column-reverse; align-items: flex-start; }
   .get-mac { justify-items: start; }
+  .hero-foot .which-mac { text-align: left; }
   .hero-foot p { font-size: var(--step-body); }
   .blank { max-width: none; }
   .notes { flex-direction: column; }
@@ -945,7 +948,7 @@ You unticked nothing. Move 10 files.
       <h2 class="blank" id="install-h">Give your Downloads a <a class="home" href="https://github.com/smammadov1994/pigeonhole/releases/latest/download/pigeonhole-mac-arm64.dmg">home</a>.</h2>
       <p class="after">PigeonHole is an app for your Mac. Install it like any other app; it walks you through the rest.</p>
       <ol class="steps" id="steps">
-        <li><strong>Download it</strong><span>PigeonHole for Mac: Apple Silicon or Intel. This page picks the right one; <a class="link other-mac" href="https://github.com/smammadov1994/pigeonhole/releases/latest/download/pigeonhole-mac-x64.dmg">the Intel version</a> is here too.</span></li>
+        <li><strong>Download it</strong><span>Two versions: <a class="link keep" href="https://github.com/smammadov1994/pigeonhole/releases/latest/download/pigeonhole-mac-arm64.dmg">Apple Silicon</a> (M1 and later) and <a class="link keep" href="https://github.com/smammadov1994/pigeonhole/releases/latest/download/pigeonhole-mac-x64.dmg">Intel</a>. Not sure which Mac you have? Apple menu, then About This Mac: it says Chip: Apple M… or Processor: Intel.</span></li>
         <li><strong>Drag it into Applications</strong><span>Open the file you downloaded and drag PigeonHole onto the Applications folder.</span></li>
         <li><strong>Open it</strong><span>From Applications, like any other app. It's signed and checked by Apple, so it simply opens.</span></li>
       </ol>
@@ -1439,19 +1442,38 @@ You unticked nothing. Move 10 files.
 })();
 </script>
 <script>
-/* The download for this Mac. Every button is the Apple Silicon DMG; an Intel Mac, told apart by its graphics (Intel,
-   AMD or Radeon, where Apple Silicon says Apple), gets the Intel one instead, and the line under the hero button flips. */
+/* The download for this Mac. Chrome and Firefox name the chip (Apple M…, or Intel, AMD, Radeon): the buttons go straight
+   to that DMG, and the line under the hero button offers the other. Safari says only "Apple GPU" on every Mac, so there
+   it offers both by name, with how to check. On a phone or a PC: PigeonHole is a Mac app. */
 (() => {
+  const ARM = "https://github.com/smammadov1994/pigeonhole/releases/latest/download/pigeonhole-mac-arm64.dmg", X64 = "https://github.com/smammadov1994/pigeonhole/releases/latest/download/pigeonhole-mac-x64.dmg";
+  const lines = document.querySelectorAll(".which-mac");
+  const link = (href, text) => Object.assign(document.createElement("a"), { className: "link", href, textContent: text });
+  const ua = navigator.userAgent;
+  const mac = /Macintosh|Mac OS X/.test(ua) && !(navigator.maxTouchPoints > 1); // an iPad says Macintosh too, but has touch
+  if (!mac) {
+    lines.forEach((p) => p.replaceChildren("PigeonHole is a Mac app: open this page on your Mac to get it, for ", link(ARM, "Apple Silicon"), " or ", link(X64, "Intel"), "."));
+    return;
+  }
   let gpu = "";
   try {
     const gl = document.createElement("canvas").getContext("webgl");
     const info = gl && gl.getExtension("WEBGL_debug_renderer_info");
     gpu = info ? String(gl.getParameter(info.UNMASKED_RENDERER_WEBGL)) : "";
   } catch {}
-  if (!/Intel|AMD|Radeon/i.test(gpu) || /Apple/i.test(gpu)) return;
-  const ARM = "https://github.com/smammadov1994/pigeonhole/releases/latest/download/pigeonhole-mac-arm64.dmg", X64 = "https://github.com/smammadov1994/pigeonhole/releases/latest/download/pigeonhole-mac-x64.dmg";
-  document.querySelectorAll(`a[href="${ARM}"]`).forEach((a) => { a.href = X64; });
-  document.querySelectorAll(".which-mac").forEach((p) => { p.replaceChildren("For Intel Macs. ", Object.assign(document.createElement("a"), { className: "link", href: ARM, textContent: "Apple Silicon?" })); });
+  const kind = /Apple M\d/.test(gpu) ? "arm" : /Intel|AMD|Radeon|NVIDIA/i.test(gpu) && !/Apple/.test(gpu) ? "intel" : "unknown";
+  if (kind === "intel") {
+    document.querySelectorAll(`a[href="${ARM}"]:not(.keep)`).forEach((el) => { el.href = X64; });
+    lines.forEach((p) => p.replaceChildren("For your Intel Mac. On Apple Silicon? ", link(ARM, "Get that version"), "."));
+  } else if (kind === "arm") {
+    lines.forEach((p) => p.replaceChildren("For your Apple Silicon Mac. On Intel? ", link(X64, "Get that version"), "."));
+  } else {
+    const hint = Object.assign(document.createElement("span"), { className: "which-hint", hidden: true,
+      textContent: "Apple menu, then About This Mac: Chip: Apple M… is Apple Silicon; Processor: Intel is Intel." });
+    const which = Object.assign(document.createElement("button"), { className: "textbutton", type: "button", textContent: "Which do I have?" });
+    which.addEventListener("click", () => { hint.hidden = !hint.hidden; });
+    lines.forEach((p) => p.replaceChildren("For Apple Silicon (M1 and later). Intel Mac? ", link(X64, "Get that version"), ". ", which, hint));
+  }
 })();
 </script>
 <script>
