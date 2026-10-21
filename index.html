@@ -121,6 +121,8 @@ em { font-style: italic; }
 .slot .g3 { background: #7FC4DA; right: -6%; bottom: -70%; }
 .hero-foot { margin-top: clamp(40px, 7vh, 80px); display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 28px 48px; }
 .hero-foot p { font-size: var(--step-lead); line-height: 1.35; max-width: 44ch; }
+.get-mac { display: grid; gap: 10px; justify-items: end; }
+.hero-foot .which-mac { font-size: var(--step-small); color: var(--muted); max-width: none; }
 
 /* The same picture, opened to its full width. */
 .window { margin: 0; }
@@ -605,6 +607,7 @@ footer { background: var(--ink); color: var(--accent-ink); min-height: clamp(560
   .top .wide { display: none; }
   .sentence { margin-top: 72px; font-size: 16vw; }
   .hero-foot { flex-direction: column-reverse; align-items: flex-start; }
+  .get-mac { justify-items: start; }
   .hero-foot p { font-size: var(--step-body); }
   .blank { max-width: none; }
   .notes { flex-direction: column; }
@@ -649,7 +652,10 @@ footer { background: var(--ink); color: var(--accent-ink); min-height: clamp(560
   </h1>
   <div class="hero-foot">
     <p>It reads what's in each file in your Downloads and Desktop, finds the folder it belongs in, and asks before moving anything. Free to use; Pro, $24 once, adds search by meaning, Autopilot and more.</p>
-    <a class="button" href="https://github.com/smammadov1994/pigeonhole/releases/latest/download/pigeonhole-mac-arm64.dmg">Download for Mac</a>
+    <div class="get-mac">
+      <a class="button" href="https://github.com/smammadov1994/pigeonhole/releases/latest/download/pigeonhole-mac-arm64.dmg">Download for Mac</a>
+      <p class="which-mac">For Apple Silicon. <a class="link other-mac" href="https://github.com/smammadov1994/pigeonhole/releases/latest/download/pigeonhole-mac-x64.dmg">Intel Mac?</a></p>
+    </div>
   </div>
 </header>
 
@@ -939,7 +945,7 @@ You unticked nothing. Move 10 files.
       <h2 class="blank" id="install-h">Give your Downloads a <a class="home" href="https://github.com/smammadov1994/pigeonhole/releases/latest/download/pigeonhole-mac-arm64.dmg">home</a>.</h2>
       <p class="after">PigeonHole is an app for your Mac. Install it like any other app; it walks you through the rest.</p>
       <ol class="steps" id="steps">
-        <li><strong>Download it</strong><span>PigeonHole for Mac, for Apple Silicon.</span></li>
+        <li><strong>Download it</strong><span>PigeonHole for Mac: Apple Silicon or Intel. This page picks the right one; <a class="link other-mac" href="https://github.com/smammadov1994/pigeonhole/releases/latest/download/pigeonhole-mac-x64.dmg">the Intel version</a> is here too.</span></li>
         <li><strong>Drag it into Applications</strong><span>Open the file you downloaded and drag PigeonHole onto the Applications folder.</span></li>
         <li><strong>Open it</strong><span>From Applications, like any other app. It's signed and checked by Apple, so it simply opens.</span></li>
       </ol>
@@ -1432,5 +1438,43 @@ You unticked nothing. Move 10 files.
   }, { threshold: 0.3 }).observe(stage);
 })();
 </script>
+<script>
+/* The download for this Mac. Every button is the Apple Silicon DMG; an Intel Mac, told apart by its graphics (Intel,
+   AMD or Radeon, where Apple Silicon says Apple), gets the Intel one instead, and the line under the hero button flips. */
+(() => {
+  let gpu = "";
+  try {
+    const gl = document.createElement("canvas").getContext("webgl");
+    const info = gl && gl.getExtension("WEBGL_debug_renderer_info");
+    gpu = info ? String(gl.getParameter(info.UNMASKED_RENDERER_WEBGL)) : "";
+  } catch {}
+  if (!/Intel|AMD|Radeon/i.test(gpu) || /Apple/i.test(gpu)) return;
+  const ARM = "https://github.com/smammadov1994/pigeonhole/releases/latest/download/pigeonhole-mac-arm64.dmg", X64 = "https://github.com/smammadov1994/pigeonhole/releases/latest/download/pigeonhole-mac-x64.dmg";
+  document.querySelectorAll(`a[href="${ARM}"]`).forEach((a) => { a.href = X64; });
+  document.querySelectorAll(".which-mac").forEach((p) => { p.replaceChildren("For Intel Macs. ", Object.assign(document.createElement("a"), { className: "link", href: ARM, textContent: "Apple Silicon?" })); });
+})();
+</script>
+<script>
+/* Pro's price now, from the licence server: during a launch deal, the deal's price, the list price struck through,
+   and until when. Without an answer, the page says $24, as written. */
+(async () => {
+  try {
+    const p = await (await fetch("https://pigeonhole-licence.smammadov494.workers.dev/pricing")).json();
+    const deal = p.launch && new Date(p.launch.until) > new Date() ? p.launch : null;
+    if (!deal) return;
+    const until = new Date(deal.until).toLocaleDateString("en", { month: "long", day: "numeric" });
+    const price = document.querySelector(".tier.pro .tier-price");
+    const note = document.createElement("small");
+    note.append(" launch price, was ", Object.assign(document.createElement("s"), { textContent: `$${p.price}` }));
+    price.replaceChildren(`$${deal.price}`, note);
+    const hero = document.querySelector(".hero-foot > p");
+    hero.textContent = hero.textContent.replace(`Pro, $${p.price} once`, `Pro, $${deal.price} once this launch week`);
+    document.querySelector(".tier.pro .tier-terms").textContent = `Once, inside the app: $${deal.price} until ${until}, then $${p.price}. Yours to keep, with a year of updates. Try it free for 14 days first.`;
+    document.querySelector(".pro-tag").textContent = `Pro · $${deal.price} launch week · free for 14 days`;
+  } catch {}
+})();
+</script>
+<!-- Visitor counts: Cloudflare Web Analytics. No cookies, nothing personal; the token is public by design. -->
+<script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "f4fa78709f5b4ef08e5acf521a6ab389"}'></script>
 </body>
 </html>
